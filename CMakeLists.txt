@@ -4,4 +4,12 @@ project(spyMaster3000
   DESCRIPTION "Tool for the utlimate spy."
   LANGUAGES CXX)
 
-include_subdirectory(src)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Fetch googleTest as git submodule
+include(cmake/updateSubmodules.cmake)
+
+include(CTest)
+add_subdirectory(src)
+add_subdirectory(external)
+add_subdirectory(tests)
