@@ -1,3 +1,4 @@
+#include <bitset>
 #include <cstdint>
 #include <cstring>
 #include <ios>
@@ -41,5 +42,4 @@ void padMsg(std::string msg) {
 /* int main() {
 	sha256::padMsg("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq");
 	util::printBin(sha256::M[0], 16);
-        std::cout << std::hex << sha256::M[0] << "\n";
 } */
