@@ -1,8 +1,5 @@
-#include <bitset>
 #include <cstdint>
 #include <cstring>
-#include <ios>
-#include <iostream>
 #include <string>
 #include "../util/utility.h"
 
@@ -39,7 +36,7 @@ void padMsg(std::string msg) {
 }
 }
 
-/* int main() {
+int main() {
 	sha256::padMsg("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq");
-	util::printBin(sha256::M[0], 16);
-} */
+	util::printBits(sha256::M, 1024);
+}
