@@ -65,19 +65,53 @@ std::string encrypt(std::string input, std::string key) {
 			int offset = abs(i1%5-i2%5);	
 			if(i1%5 > i2%5) offset *= -1;
 			o1 = ct.at(i1+offset);
-			o2 = ct.at(i2+offset);
+			o2 = ct.at(i2-offset);
+		}
+
+		output.push_back(o1);
+		output.push_back(o2);
+	}
+	
+	return output;
+}
+std::string decrypt(std::string input, std::string key) {
+	std::string ct = createCypherTable(key);
+	std::string output;
+
+	for(int i = 0; i < input.length(); i+=2 ) {
+		int i1 = ct.find(input.at(i));
+		int i2 = ct.find(input.at(i+1));
+		char o1, o2;
+
+		// in the same column
+		if(abs(i1-i2)%5 == 0) {
+			o1 = i1-5>=0 ? ct.at(i1-5) : ct.at(i1+20);	
+			o2 = i2-5>=0 ? ct.at(i2-5) : ct.at(i2+20);	
+		}
+		// in the same row
+		else if(i1/5 == i2/5) {
+			o1 = (i1)%5!=0 ? ct.at(i1-1) : ct.at(i1+4);
+			o2 = (i2)%5!=0 ? ct.at(i2-1) : ct.at(i2+4);
+		}
+		// forms a square
+		else {
+			int offset = abs(i1%5-i2%5);	
+			if(i1%5 > i2%5) offset *= -1;
+			o1 = ct.at(i1+offset);
+			o2 = ct.at(i2-offset);
 		}
 
 		output.push_back(o1);
 		output.push_back(o2);
 	}
 
+	static const std::regex re("([a-zA-Z])x\\1");
+	output = std::regex_replace(output, re, "$1$1");
 	return output;
 }
-
 }
 
-int main() {
+/* int main() {
 	
 	std::string
 		plainText = "helloworld",
@@ -85,4 +119,4 @@ int main() {
 		expected = "kgyvrvvqgrbf";
 
 	playfair::encrypt(plainText, key);
-}
+} */

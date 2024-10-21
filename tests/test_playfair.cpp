@@ -20,3 +20,48 @@ TEST(Encrypt, hello_world) {
 
 	EXPECT_EQ(encrypt(plainText, key), expected);
 }
+
+TEST(Encrypt, computer) {
+	std::string
+		plainText = "communicate",
+		key = "computer",
+		expected = "omrmpcsgpter";
+
+	EXPECT_EQ(encrypt(plainText, key), expected);
+}
+
+TEST(Encrypt, instrumentsz) {
+	std::string
+		plainText = "instrumentsz",
+		key = "monarchy",
+		expected = "gatlmzclrqtx";
+
+	EXPECT_EQ(encrypt(plainText, key), expected);
+}
+
+TEST(Decrypt, hello_world) {
+	std::string
+		encrypted = "kgyvrvvqgrbf",
+		key = "playfir",
+		expected = "helloworlda";
+
+	EXPECT_EQ(decrypt(encrypted, key), expected);
+}
+
+TEST(Decrypt, computer) {
+	std::string
+		encrypted = "omrmpcsgpter",
+		key = "computer",
+		expected = "communicate";
+
+	EXPECT_EQ(decrypt(encrypted, key), expected);
+}
+
+TEST(Decrypt, instrumentsz) {
+	std::string
+		encrypted = "gatlmzclrqtx",
+		key = "monarchy",
+		expected = "instrumentsz";
+
+	EXPECT_EQ(decrypt(encrypted, key), expected);
+}
