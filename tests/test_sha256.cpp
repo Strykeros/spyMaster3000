@@ -8,11 +8,14 @@ using namespace sha256;
 
 TEST(SHA256PadTest, ShortMessage) {
     std::string msg = "abc";
-	uint8_t expectedBytes[] = {'a', 'b', 'c', 0x80};
     padMsg(msg);
 
 	ASSERT_EQ(blockCount, 1) << "Block count is not 1";
-	EXPECT_TRUE(memcmp(M, expectedBytes, 4) == 0) << "First 4 bytes do not match";
+
+	EXPECT_TRUE(memcmp(M, msg.c_str(), msg.length()) == 0) << "First 4 bytes do not match";
+
+	msg.push_back(0x80); //byte signaling end of msg
+	EXPECT_TRUE(memcmp(M, msg.c_str(), msg.length()) == 0) << "Next byte after msg is not 0x80";
 
 	uint8_t* pLastByte = (uint8_t*)(M + blockCount) - 1;
 	uint8_t expected = 0b00011000; // 24

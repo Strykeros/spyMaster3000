@@ -51,16 +51,4 @@ void printEncryptedChunks(const std::vector<word>& chunks) {
     }
     std::cout << std::endl;
 }
-
-void printBin(uint32_t* ptr, int size) {
-    for(int i = 0; i < size; i++) {
-        const int size = sizeof(uint32_t)*8;
-        std::bitset<size> bits(ptr[i]);
-        std::string str = bits.to_string(); 
-        for(int j = size; j >= 0; j-=8) {
-            std::cout << str.substr(j, 8) << " ";
-        }
-        std::cout << std::endl;
-    }
-}
 }

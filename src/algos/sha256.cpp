@@ -34,6 +34,10 @@ void padMsg(std::string msg) {
         ptr2 -= 1;
         *ptr2 = __builtin_bswap32(l);
 }
+
+void hash() {
+
+}
 }
 
 int main() {
