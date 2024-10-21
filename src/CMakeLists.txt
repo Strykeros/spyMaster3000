@@ -5,6 +5,7 @@ set(SOURCES
   main.cpp
   algos/des.cpp
   algos/caeser.cpp
+  algos/playfair.cpp
   util/utility.cpp
   util/args.cpp
 )

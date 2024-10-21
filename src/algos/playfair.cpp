@@ -1,6 +1,6 @@
+#include "playfair.h"
 #include <algorithm>
 #include <regex>
-#include <string>
 #include <cstring>
 
 namespace playfair {
@@ -110,13 +110,3 @@ std::string decrypt(std::string input, std::string key) {
 	return output;
 }
 }
-
-/* int main() {
-	
-	std::string
-		plainText = "helloworld",
-		key = "playfir",
-		expected = "kgyvrvvqgrbf";
-
-	playfair::encrypt(plainText, key);
-} */

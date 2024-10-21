@@ -4,6 +4,33 @@
 #include "util/args.h"
 #include "algos/caeser.h"
 #include "spyMaster.h"
+#include "playfair.h"
+
+void encrypt() {
+	std::string encrypted;
+
+	if(Args::selectedAlgo == CAESER) {
+		encrypted = Caeser::encrypt(Args::text, Args::key_int);
+	}
+	else if (Args::selectedAlgo == PLAYFAIR) {
+		encrypted = playfair::encrypt(Args::text, Args::key_str);
+	}
+
+	std::cout << encrypted << std::endl;
+}
+
+void decrypt() {
+	std::string decrypted;
+
+	if(Args::selectedAlgo == CAESER) {
+		decrypted = Caeser::decrypt(Args::text, Args::key_int);
+	}
+	else if (Args::selectedAlgo == PLAYFAIR) {
+		decrypted = playfair::decrypt(Args::text, Args::key_str);
+	}
+
+	std::cout << decrypted << std::endl;
+}
 
 int main(int argc, char* argv[]) {
 	try {
@@ -14,20 +41,9 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	std::string encrypted;
-	std::string decrypted;
-
-	if(Args::selectedAlgo == CAESER) {
-		encrypted = Caeser::encrypt(Args::plaintext, Args::intKey);
-		decrypted = Caeser::decrypt(encrypted, Args::intKey);
-	}
-	else if (Args::selectedAlgo == DES) {
-
-	}
-	
-	std::cout << "PlainText: " << Args::plaintext << std::endl;
-	std::cout << "Encrypted: " << encrypted << std::endl;
-	std::cout << "Decrypted: " << decrypted << std::endl;
+	if(Args::doDecrypt) decrypt();
+	else encrypt();
 
 	return 0;
 }
+
