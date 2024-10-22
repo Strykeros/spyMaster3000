@@ -23,6 +23,11 @@ void parse(int argc, char* argv[]) {
 	if(validAlgos.count(optarg) == 0) throw "Unknown algorithm!";
 	selectedAlgo = optarg;
 
+	//check if there is piped input
+	if (!isatty(fileno(stdin))) {
+		std::getline(std::cin, text);
+	}
+
 	while((c = getopt(argc, argv, "a:t:k:D")) != -1) {
 		switch(c) {
 		case 't':
