@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "sha256.h"
+#include "../util/utility.h"
 
 namespace sha256 {
 typedef uint32_t word;
@@ -129,7 +130,7 @@ digest hash(std::string msg) {
 }
 }
 
-/* int main() {
-	sha256::padMsg("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq");
-	util::printBits(sha256::M, 1024);
-} */
+int main() {
+    sha256::padMsg("abcdfge");
+    printHex(sha256::M, 512, 8);
+}
