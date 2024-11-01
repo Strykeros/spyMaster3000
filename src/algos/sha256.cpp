@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <bitset>
 #include <cstdint>
 #include <cstring>
 #include <iostream>
@@ -111,8 +113,6 @@ digest hash(std::string msg) {
             c = b;
             b = a;
             a = modoloAdd({T1, T2});
-
-            std::cout << std::hex << a << "\n";
         }
 
         // Compute intermediate hash values
@@ -129,8 +129,41 @@ digest hash(std::string msg) {
     return H; 
 }
 }
-
+#include "../../tests/fixture_sha256.cpp"
+using namespace sha256;
 int main() {
-    sha256::padMsg("abcdfge");
-    printHex(sha256::M, 512, 8);
+    word* W = new word[64];
+    /* const word* expected =  new word[] {
+	0x61626364, 0x696a6b6c,
+	0x62636465, 0x6a6b6c6d,
+	0x63646566, 0x6b6c6d6e,
+	0x64656667, 0x6c6d6e6f,
+	0x65666768, 0x6d6e6f70,
+	0x66676869, 0x6e6f7071,
+	0x6768696a, 0x80000000,
+	0x68696a6b, 0x00000000,
+    }; */
+
+    padMsg("abc");
+    // util::printBits(M[0], 512);
+    // std::cout << "\n";
+    //printHex(M, 16);
+    //std::cout << "\n";
+    prepareMsgSchedule(W, &M[0]);
+    for (int i = 0; i < 64; i++) {
+        std::cout << "[" << i << "]\n";
+        util::printBits(&W[i], 32);
+        util::printBits(&expected_W[i], 32, true);
+        std::cout << "\n";
+        /* std::cout << std::bitset<32>(W[i]) << "\n"; 
+        std::cout << std::bitset<32>(expected_W[i]) << "\n\n";  */
+    }
+
+    /* util::printBits(&W[16], 32);
+    std::cout << "Output:\n";
+    printHex(M[0], 16);
+    std::cout << "Expected:\n";
+    printHex(expected, 16);
+    delete[] W;
+    delete[] expected; */
 }
