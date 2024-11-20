@@ -61,15 +61,10 @@ word smallSigma1(word x) { return rotr(x, 17) ^ rotr(x, 19) ^ (x >> 10); }
 void prepareMsgSchedule(word* W, block* m) {
     memcpy(W, *m, sizeof(block));
     for(int t = 16; t < 64; t++) {
-        if(t == 17) {
-            word ss1_w15 = smallSigma1(W[t-2]);
-            word w15 = W[t-2];
-            util::printBits(ss1_w15, "smallSigma1 W15");
-            util::printBits(w15, "W15");
-            /* std::cout << "smallSigma1 w15: " << std::bitset<32>(ss1_w15) << "\n";
-            std::cout << "w15: " << std::bitset<32>(w15) << "\n"; */
-
-        }
+        /* if(t == 17) {
+            util::printBits(smallSigma1(W[t-2]), "smallSigma1 W15");
+            util::printBits(W[t-2], "W15");
+        } */
         W[t] =  W[t-16] + smallSigma0(W[t-15]) + W[t-7] + smallSigma1(W[t-2]);
     }    
 }
@@ -117,7 +112,7 @@ digest hash(std::string msg) {
 }
 using namespace sha256;
 #include "../../tests/fixture_sha256.cpp"
-int main() {
+/* int main() {
     padMsg("abc");
     word W[64];
     prepareMsgSchedule(W, &M[0]);
@@ -144,4 +139,12 @@ int main() {
         }
         
     }
+} */
+
+int main() {
+    padMsg("abc");
+    word W[64];
+    prepareMsgSchedule(W, &M[0]);
+
+    util::printArray_asBits(W, 64, "test", true);
 }

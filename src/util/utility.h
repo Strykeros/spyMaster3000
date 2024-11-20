@@ -20,7 +20,27 @@ void printEncryptedChunks(const std::vector<word>& chunks);
 // TEMPLATES
 
 template<typename T>
-void printArray_asBits(const T* arr, int size, const char* msg = nullptr) {
+std::string toBits_asStr(T bits, bool reverseEndian = false) {
+    std::string str = std::bitset<sizeof(T) * 8>(bits).to_string();
+
+    if(reverseEndian) {
+        std::string reversed;
+        for(int i = sizeof(T)*8-8; i >= 0 ; i -= 8) {
+            reversed += str.substr(i, 8);
+        }
+        str = reversed;
+    }
+    
+    // Add space after each byte
+    for(int i = 8; i < sizeof(T) * 8; i += 9) {
+        str.insert(i, " ");
+    }
+
+    return str;
+}
+
+template<typename T>
+void printArray_asBits(const T* arr, int size, const char* msg = nullptr, bool reverseEndian = false) {
     std::string str;
     
     if(msg) {
@@ -30,33 +50,21 @@ void printArray_asBits(const T* arr, int size, const char* msg = nullptr) {
     }
 
     for (int i = 0; i < size; i++) {
-        std::bitset<sizeof(T) * 8> bits(arr[i]);
-        for (int j = 0; j < sizeof(T) * 8; j += 8) {
-            // Extract 8 bits from the bitset and convert to a string
-            std::string byte = bits.to_string().substr(j, 8);
-            str += byte + " ";
-        }
-        str += "\n";
+        str += toBits_asStr(arr[i], reverseEndian) += "\n";
     }
     
     std::cout << str << std::endl;
 }
 
 template<typename T>
-void printBits(T bits, const char* msg = nullptr) {
+void printBits(T bits, const char* msg = nullptr, bool reverseEndian = false) {
     std::string str;
 
     if(msg) {
         str += msg;
         str += ": ";
     }
-
-    std::string bits_str = std::bitset<sizeof(T) * 8>(bits).to_string();
-    for(int i = 8; i < sizeof(T) * 8; i += 9) {
-        bits_str.insert(i, " ");
-    }
-    str += bits_str;
-
+    str += toBits_asStr(bits, reverseEndian);
     std::cout << str << std::endl;
 }
 
