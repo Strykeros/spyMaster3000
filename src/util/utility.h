@@ -19,45 +19,48 @@ void printEncryptedChunks(const std::vector<word>& chunks);
 
 // TEMPLATES
 
-
-/**
- * @brief A utility function to debug-print bits in a nicer way than std::bitset.
- * 
- * This function prints the binary representation of a value pointed to by `bits`. 
- * It supports optional parameters for adding a debug message and reversing the bit order.
- * 
- * @tparam T The type of the value to be printed (e.g., uint8_t, uint16_t).
- * @param bits A pointer to the value whose bits are to be printed.
- * @param bitCount The number of bits to print from the value.
- * @param msg (Optional) A debug message to print before the binary representation.
- *            Default is `nullptr`.
- * @param reverseEndian (Optional) If set to `true`, prints the bits in reverse-endian order.
- *                      Default is `false`.
- */
 template<typename T>
-void printBits(const T* bits, int bitCount, const char* msg = nullptr, bool reverseEndian = false) {
-    uint8_t* ptr = (uint8_t*)bits;
-    int byteCount = bitCount / 8;
-    int Tsize = sizeof(T);
-    int j = 0;
-
-    if(msg != nullptr) {
-        std::cout << msg;
-        byteCount > 4 ? std::cout << "\n" : std::cout << ": ";
+void printArray_asBits(const T* arr, int size, const char* msg = nullptr) {
+    std::string str;
+    
+    if(msg) {
+        str += "[";
+        str += msg;
+        str += "]\n";
     }
 
-    for(int i = 0; i < byteCount; i++) {
-        if(reverseEndian) {
-            if(i % Tsize == 0) j = Tsize-1;
-            else j -= 2;
+    for (int i = 0; i < size; i++) {
+        std::bitset<sizeof(T) * 8> bits(arr[i]);
+        for (int j = 0; j < sizeof(T) * 8; j += 8) {
+            // Extract 8 bits from the bitset and convert to a string
+            std::string byte = bits.to_string().substr(j, 8);
+            str += byte + " ";
         }
-        std::cout << std::bitset<8>(*(ptr+i+j));
-        if(i % 4 == 3 && i != byteCount-1) std::cout << std::endl;
-        else std::cout << " ";
+        str += "\n";
     }
-    std::cout << std::endl;
+    
+    std::cout << str << std::endl;
 }
+
+template<typename T>
+void printBits(T bits, const char* msg = nullptr) {
+    std::string str;
+
+    if(msg) {
+        str += msg;
+        str += ": ";
+    }
+
+    std::string bits_str = std::bitset<sizeof(T) * 8>(bits).to_string();
+    for(int i = 8; i < sizeof(T) * 8; i += 9) {
+        bits_str.insert(i, " ");
+    }
+    str += bits_str;
+
+    std::cout << str << std::endl;
 }
+
+
 
 template<typename T>
 void printHex(const T* value, int size) {
@@ -66,4 +69,6 @@ void printHex(const T* value, int size) {
         std::cout << std::hex << value[i] << " "; 
     }
     std::cout << std::endl; 
+}
+
 }

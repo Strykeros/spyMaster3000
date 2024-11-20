@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <cstring>
+#include <string>
 #include "sha256.h"
 #include "../util/utility.h"
 
@@ -44,8 +45,8 @@ void padMsg(std::string msg) {
     int* ptr2 = (int*)(M + N);
     ptr2 -= 1;
     // must swap (mirror) bits cuz the spec says so
-    //*ptr2 = __builtin_bswap32(l);
-    *ptr2 = l;
+    *ptr2 = __builtin_bswap32(l);
+    //*ptr2 = l;
 }
 
 word ch(word x, word y, word z) { return (x & y) ^ (x & z); }
@@ -63,10 +64,10 @@ void prepareMsgSchedule(word* W, block* m) {
         if(t == 17) {
             word ss1_w15 = smallSigma1(W[t-2]);
             word w15 = W[t-2];
-            // util::printBits(&ss1_w15, 32, "smallSigma1 W15");
-            // util::printBits(&w15, 32, "W15");
-            std::cout << "smallSigma1 w15: " << std::bitset<32>(ss1_w15) << "\n";
-            std::cout << "w15: " << std::bitset<32>(w15) << "\n";
+            util::printBits(ss1_w15, "smallSigma1 W15");
+            util::printBits(w15, "W15");
+            /* std::cout << "smallSigma1 w15: " << std::bitset<32>(ss1_w15) << "\n";
+            std::cout << "w15: " << std::bitset<32>(w15) << "\n"; */
 
         }
         W[t] =  W[t-16] + smallSigma0(W[t-15]) + W[t-7] + smallSigma1(W[t-2]);
@@ -122,22 +123,22 @@ int main() {
     prepareMsgSchedule(W, &M[0]);
     for(int i = 0; i < 64; i++) {
         std::cout << "[w " << i << "]\n";
-        util::printBits(&W[i], 32, "got");
-        util::printBits(&expected_W[i], 32, "exp", true);
+        util::printBits(W[i], "got");
+        util::printBits(expected_W[i],"exp");
         std::cout << "\n";
 
         if(i >= 16) {
             std::cout << "w" << i - 2 << ": ";
-            util::printBits(&W[i-2], 32);
+            util::printBits(W[i-2]);
 
             std::cout << "w" << i - 7 << ": ";
-            util::printBits(&W[i-7], 32);
+            util::printBits(W[i-7]);
 
             std::cout << "w" << i - 15 << ": ";
-            util::printBits(&W[i-15], 32);
+            util::printBits(W[i-15]);
 
             std::cout << "w" << i - 16 << ": ";
-            util::printBits(&W[i-16], 32);
+            util::printBits(W[i-16]);
 
             std::cout << "\n";
         }
