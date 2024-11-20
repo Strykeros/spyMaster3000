@@ -1,15 +1,11 @@
-#include <algorithm>
-#include <bitset>
 #include <cstdint>
 #include <cstring>
-#include <iostream>
-#include <vector>
 #include "sha256.h"
 #include "../util/utility.h"
 
 namespace sha256 {
-typedef uint32_t word;
-typedef word block[16];
+typedef uint32_t word; // word = 32 bits
+typedef word block[16]; // block = 16 words or 512 bits
 
 block* M;
 int N;
@@ -47,7 +43,9 @@ void padMsg(std::string msg) {
 
     int* ptr2 = (int*)(M + N);
     ptr2 -= 1;
-    *ptr2 = __builtin_bswap32(l);
+    // must swap (mirror) bits cuz the spec says so
+    //*ptr2 = __builtin_bswap32(l);
+    *ptr2 = l;
 }
 
 word ch(word x, word y, word z) { return (x & y) ^ (x & z); }
@@ -59,23 +57,19 @@ word sigma1(word x) { return rotr(x, 6) ^ rotr(x, 11) ^ rotr(x, 25); }
 word smallSigma0(word x) { return rotr(x, 7) ^ rotr(x, 18) ^ (x >> 3); }
 word smallSigma1(word x) { return rotr(x, 17) ^ rotr(x, 19) ^ (x >> 10); }
 
-word modoloAdd(std::vector<word> words) {
-    word sum = words[0];
-    for(int i = 1; i < words.size(); i++) {
-        sum = (sum + words[i]) % 0x100000000;
-    }
-    return sum;
-}
-
 void prepareMsgSchedule(word* W, block* m) {
     memcpy(W, *m, sizeof(block));
     for(int t = 16; t < 64; t++) {
-        W[t] = modoloAdd({
-            smallSigma1(W[t-2]),
-            W[t-7],
-            smallSigma0(W[t-15]),
-            W[t-16]
-        });
+        if(t == 17) {
+            word ss1_w15 = smallSigma1(W[t-2]);
+            word w15 = W[t-2];
+            // util::printBits(&ss1_w15, 32, "smallSigma1 W15");
+            // util::printBits(&w15, 32, "W15");
+            std::cout << "smallSigma1 w15: " << std::bitset<32>(ss1_w15) << "\n";
+            std::cout << "w15: " << std::bitset<32>(w15) << "\n";
+
+        }
+        W[t] =  W[t-16] + smallSigma0(W[t-15]) + W[t-7] + smallSigma1(W[t-2]);
     }    
 }
 digest hash(std::string msg) {
@@ -94,76 +88,59 @@ digest hash(std::string msg) {
 
         // Main hashing logic
         for(int t = 0; t < 64; t++) {
-            word T1 = modoloAdd({
-                h,
-                sigma1(e),
-                ch(e,f,g),
-                K[t],
-                W[t]
-            }); 
-            word T2 = modoloAdd({
-                sigma0(a),
-                maj(a,b,c)
-            });
+            word T1 = h + sigma1(e) + ch(e,f,g) + K[t] + W[t];
+            word T2 = sigma0(a) + maj(a,b,c);
             h = g;
             g = f;
             f = e;
-            e = modoloAdd({d, T1});
+            e = d + T1;
             d = c;
             c = b;
             b = a;
-            a = modoloAdd({T1, T2});
+            a = T1 + T2;
         }
 
         // Compute intermediate hash values
-        H[0] = modoloAdd({a, H[0]});
-        H[1] = modoloAdd({b, H[1]});
-        H[2] = modoloAdd({c, H[2]});
-        H[3] = modoloAdd({d, H[3]});
-        H[4] = modoloAdd({e, H[4]});
-        H[5] = modoloAdd({f, H[5]});
-        H[6] = modoloAdd({g, H[6]});
-        H[7] = modoloAdd({h, H[7]});
+        H[0] = a + H[0];
+        H[1] = b + H[1];
+        H[2] = c + H[2];
+        H[3] = d + H[3];
+        H[4] = e + H[4];
+        H[5] = f + H[5];
+        H[6] = g + H[6];
+        H[7] = h + H[7];
     }
 
     return H; 
 }
 }
-#include "../../tests/fixture_sha256.cpp"
 using namespace sha256;
+#include "../../tests/fixture_sha256.cpp"
 int main() {
-    word* W = new word[64];
-    /* const word* expected =  new word[] {
-	0x61626364, 0x696a6b6c,
-	0x62636465, 0x6a6b6c6d,
-	0x63646566, 0x6b6c6d6e,
-	0x64656667, 0x6c6d6e6f,
-	0x65666768, 0x6d6e6f70,
-	0x66676869, 0x6e6f7071,
-	0x6768696a, 0x80000000,
-	0x68696a6b, 0x00000000,
-    }; */
-
     padMsg("abc");
-    // util::printBits(M[0], 512);
-    // std::cout << "\n";
-    //printHex(M, 16);
-    //std::cout << "\n";
+    word W[64];
     prepareMsgSchedule(W, &M[0]);
-    for (int i = 0; i < 64; i++) {
-        std::cout << "[" << i << "]\n";
-        util::printBits(&W[i], 32);
-        util::printBits(&expected_W[i], 32, true);
+    for(int i = 0; i < 64; i++) {
+        std::cout << "[w " << i << "]\n";
+        util::printBits(&W[i], 32, "got");
+        util::printBits(&expected_W[i], 32, "exp", true);
         std::cout << "\n";
-        /* std::cout << std::bitset<32>(W[i]) << "\n"; 
-        std::cout << std::bitset<32>(expected_W[i]) << "\n\n";  */
-    }
 
-    /* util::printBits(&W[16], 32);
-    std::cout << "Output:\n";
-    printHex(M[0], 16);
-    std::cout << "Expected:\n";
-    printHex(expected, 16);
-    delete[] W;
-    delete[] expected; */
+        if(i >= 16) {
+            std::cout << "w" << i - 2 << ": ";
+            util::printBits(&W[i-2], 32);
+
+            std::cout << "w" << i - 7 << ": ";
+            util::printBits(&W[i-7], 32);
+
+            std::cout << "w" << i - 15 << ": ";
+            util::printBits(&W[i-15], 32);
+
+            std::cout << "w" << i - 16 << ": ";
+            util::printBits(&W[i-16], 32);
+
+            std::cout << "\n";
+        }
+        
+    }
 }

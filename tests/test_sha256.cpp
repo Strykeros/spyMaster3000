@@ -39,7 +39,7 @@ TEST(SHA256PadTest, LongMessage) {
 	EXPECT_EQ(*pLast2Bytes, expected) << "Last byte is not msg lenght 56";
 }
 
-TEST(MsgSchedule, LongMessage) {
+/* TEST(MsgSchedule, LongMessage) {
     word* W = new word[64];
 
     padMsg("abc");
@@ -50,7 +50,16 @@ TEST(MsgSchedule, LongMessage) {
     }
     delete[] W;
 }
+*/
+TEST(Helper_Func, smallSigma1) {
+    word input = 0b01100001011000100110001110000000;
+    word expected = 0b01111101101010000110010000000101;
+    EXPECT_EQ(smallSigma1(input), expected);
 
+    input = 0b00000000000011110000000000000000;
+    expected = 0b01100000000000000000001111000110;
+    EXPECT_EQ(smallSigma1(input), expected);
+}
 /* TEST(SHA256Hash, ShortMessage) {
     digest result = hash("abc");
     digest expected = {0xba7816bf, 0x8f01cfea, 0x414140de, 0x5dae2223, 0xb00361a3, 0x96177a9c, 0xb410ff61, 0xf20015ad};

@@ -18,52 +18,47 @@ std::string chunksToString(const std::vector<uint64_t>& chunks);
 void printEncryptedChunks(const std::vector<word>& chunks);
 
 // TEMPLATES
+
+
+/**
+ * @brief A utility function to debug-print bits in a nicer way than std::bitset.
+ * 
+ * This function prints the binary representation of a value pointed to by `bits`. 
+ * It supports optional parameters for adding a debug message and reversing the bit order.
+ * 
+ * @tparam T The type of the value to be printed (e.g., uint8_t, uint16_t).
+ * @param bits A pointer to the value whose bits are to be printed.
+ * @param bitCount The number of bits to print from the value.
+ * @param msg (Optional) A debug message to print before the binary representation.
+ *            Default is `nullptr`.
+ * @param reverseEndian (Optional) If set to `true`, prints the bits in reverse-endian order.
+ *                      Default is `false`.
+ */
 template<typename T>
-void printBits(const T* bits, int bitCount, bool reverseEndian = false) {
+void printBits(const T* bits, int bitCount, const char* msg = nullptr, bool reverseEndian = false) {
     uint8_t* ptr = (uint8_t*)bits;
     int byteCount = bitCount / 8;
     int Tsize = sizeof(T);
     int j = 0;
+
+    if(msg != nullptr) {
+        std::cout << msg;
+        byteCount > 4 ? std::cout << "\n" : std::cout << ": ";
+    }
+
     for(int i = 0; i < byteCount; i++) {
         if(reverseEndian) {
             if(i % Tsize == 0) j = Tsize-1;
             else j -= 2;
         }
         std::cout << std::bitset<8>(*(ptr+i+j));
-        if(i % 4 == 3) std::cout << std::endl;
+        if(i % 4 == 3 && i != byteCount-1) std::cout << std::endl;
         else std::cout << " ";
     }
     std::cout << std::endl;
 }
 }
 
-/*
-    Desc: Prints hexidecimal representation for any lenght input in a formatted way
-    Params:
-        bits: input
-        bitCount: how many bits of input to print
-        digitsPerOutputChunk: output is chunks of hex digits, specify digits per chunk (OPTIONAL default = 2)
- */
-/* template<typename T>
-void printHex(const T* bits, int bitCount, int digitsPerOutputChunk = 2) {
-    assert(bitCount % 8 == 0 && "bitCount must be divisible by 8!");
-    assert(digitsPerOutputChunk % 2 == 0 && "digitsPerOutputChunk must be divisible by 2!");
-
-    int byteCount = bitCount / 8;
-    uint8_t* ptr = (uint8_t*)bits;
-
-
-    for(int i = 0; i < byteCount; i++) {
-        int byte = (int)ptr[i];
-        if(byte == 0) std::cout << "00";
-        else std::cout << std::hex << byte;
-        //std::cout << "|";
-        if((i + 1) % (digitsPerOutputChunk / 2) == 0) std::cout << " ";
-    }
-
-    std::cout << std::endl; 
-}
-*/
 template<typename T>
 void printHex(const T* value, int size) {
     int Tsize = sizeof(T) / 4;
