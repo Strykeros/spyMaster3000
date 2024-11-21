@@ -2,7 +2,7 @@
 #include <cstring>
 #include <string>
 #include "sha256.h"
-#include "../util/utility.h"
+#include "../util/utilbits.h"
 
 namespace sha256 {
 typedef uint32_t word; // word = 32 bits
@@ -112,39 +112,39 @@ digest hash(std::string msg) {
 }
 using namespace sha256;
 #include "../../tests/fixture_sha256.cpp"
-/* int main() {
+int main() {
     padMsg("abc");
     word W[64];
     prepareMsgSchedule(W, &M[0]);
     for(int i = 0; i < 64; i++) {
         std::cout << "[w " << i << "]\n";
-        util::printBits(W[i], "got");
-        util::printBits(expected_W[i],"exp");
+        utilbits::print(W[i], "got");
+        utilbits::print(expected_W[i],"exp");
         std::cout << "\n";
 
         if(i >= 16) {
             std::cout << "w" << i - 2 << ": ";
-            util::printBits(W[i-2]);
+            utilbits::print(W[i-2]);
 
             std::cout << "w" << i - 7 << ": ";
-            util::printBits(W[i-7]);
+            utilbits::print(W[i-7]);
 
             std::cout << "w" << i - 15 << ": ";
-            util::printBits(W[i-15]);
+            utilbits::print(W[i-15]);
 
             std::cout << "w" << i - 16 << ": ";
-            util::printBits(W[i-16]);
+            utilbits::print(W[i-16]);
 
             std::cout << "\n";
         }
         
     }
-} */
+}
 
-int main() {
+/* int main() {
     padMsg("abc");
     word W[64];
     prepareMsgSchedule(W, &M[0]);
-
-    util::printArray_asBits(W, 64, "test", true);
-}
+    
+    utilbits::printArray(W, 64, "test", true);
+} */
