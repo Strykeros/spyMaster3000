@@ -8,5 +8,6 @@ set(SOURCES
   algos/playfair.cpp
   util/utility.cpp
   util/args.cpp
+  util/memdebug.cpp
 )
 add_executable(spymaster ${SOURCES})

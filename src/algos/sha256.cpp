@@ -2,7 +2,7 @@
 #include <cstring>
 #include <string>
 #include "sha256.h"
-#include "../util/utilbits.h"
+#include "../util/memdebug.h"
 
 namespace sha256 {
 typedef uint32_t word; // word = 32 bits
@@ -45,8 +45,8 @@ void padMsg(std::string msg) {
     int* ptr2 = (int*)(M + N);
     ptr2 -= 1;
     // must swap (mirror) bits cuz the spec says so
-    *ptr2 = __builtin_bswap32(l);
-    //*ptr2 = l;
+    //*ptr2 = __builtin_bswap32(l);
+    *ptr2 = l;
 }
 
 word ch(word x, word y, word z) { return (x & y) ^ (x & z); }
@@ -118,22 +118,22 @@ int main() {
     prepareMsgSchedule(W, &M[0]);
     for(int i = 0; i < 64; i++) {
         std::cout << "[w " << i << "]\n";
-        utilbits::print(W[i], "got");
-        utilbits::print(expected_W[i],"exp");
+        memdebug::print(W[i], "got");
+        memdebug::print(expected_W[i], "exp");
         std::cout << "\n";
 
         if(i >= 16) {
             std::cout << "w" << i - 2 << ": ";
-            utilbits::print(W[i-2]);
+            memdebug::print(W[i-2]);
 
             std::cout << "w" << i - 7 << ": ";
-            utilbits::print(W[i-7]);
+            memdebug::print(W[i-7]);
 
             std::cout << "w" << i - 15 << ": ";
-            utilbits::print(W[i-15]);
+            memdebug::print(W[i-15]);
 
             std::cout << "w" << i - 16 << ": ";
-            utilbits::print(W[i-16]);
+            memdebug::print(W[i-16]);
 
             std::cout << "\n";
         }
@@ -145,6 +145,15 @@ int main() {
     padMsg("abc");
     word W[64];
     prepareMsgSchedule(W, &M[0]);
-    
-    utilbits::printArray(W, 64, "test", true);
+    word small_endian = 0b00011000000000000000000000000000;
+    word big_endian = 0b00000000000000000000000000011000;
+
+    utilbits::print(W[15]);    
+    std::cout << "is small endian: " << (W[15] == small_endian) << "\n";
+    std::cout << "is big endian: " << (W[15] == big_endian) << "\n";
+
+    std::cout << "\nMEM CMPR\n";
+    std::cout << "is small endian: " << memcmp(&W[15], &small_endian, 4) << "\n";
+    std::cout << "is big endian: " << memcmp(&W[15], &big_endian, 4) << "\n";
+
 } */
