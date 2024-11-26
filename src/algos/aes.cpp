@@ -1,13 +1,10 @@
-#include <cassert>
-#include <cstdint>
-#include <cstring>
 #include <iomanip>
 #include <iostream>
 #include <ostream>
-#include <string>
 #include <sys/types.h>
+#include "aes.h"
 
-namespace AES {
+namespace aes {
 
 const uint8_t SBOX[16][16] = {
 	{0x63, 0xca, 0xb7, 0x04, 0x09, 0x53, 0xd0, 0x51, 0xcd, 0x60, 0xe0, 0xe7, 0xba, 0x70, 0xe1, 0x8c},
@@ -62,33 +59,6 @@ const uint8_t RCON[] = {
 	0x36, 0x00, 0x00, 0x00
 };
 
-union Block {
-	uint8_t matrix[4][4];
-	uint8_t bytes[16];
-	uint32_t rows[4];
-		
-	uint32_t getCol(int c) {
-		uint32_t col = 0;
-		for(int r = 0; r < 4; r++)
-			col |= this->matrix[r][c] << (8*r);
-		return col;
-	}
-
-	Block(std::string text) {
-		assert(text.length() == 16);
-		std::memcpy(this, text.data(), 16);
-	}
-
-	Block(uint8_t* bytes) {
-		for (int c = 0; c < 4; c++) {
-			for (int r = 0; r < 4; r++) {
-				this->matrix[r][c] = bytes[4*c+r];	
-			}
-		}
-	}
-
-	Block() {}
-};
 
 // Print the block for debugging
 void dbg(const Block& b, const char* msg = nullptr) {
@@ -292,35 +262,25 @@ Block invCipher(Block state, int Nr, Block* w) {
 	return state;
 };
 
-Block encrypt(std::string input, std::string key) {
+std::string encrypt(std::string input, std::string key) {
 	int Nr = 10;
 	int Nk = 4;
 	Block blockInput(input);	
 	Block blockKey(key);	
 	Block* w = keyExpansion(blockKey,Nr, Nk);
-	return cipher(blockInput, Nr, w);
+	Block blockOutput = cipher(blockInput, Nr, w);
+	std::string output(reinterpret_cast<char*>(&blockOutput), 16);
+	return output;
 }
 
-Block decrypt(Block input, std::string key) {
+std::string decrypt(std::string input, std::string key) {
 	int Nr = 10;
 	int Nk = 4;
+	Block blockInput(input);	
 	Block blockKey(key);	
 	Block* w = keyExpansion(blockKey,Nr, Nk);
-	return invCipher(input, Nr, w);
+	Block blockOutput = invCipher(blockInput, Nr, w);
+	std::string output(reinterpret_cast<char*>(&blockOutput), 16);
+	return output;
 }
-}
-
-using namespace AES;
-int main() {
-	std::string input = "hello world yes!";
-	std::string key =   "superDuperSecret";
-
-	Block encrypted = encrypt(input, key);
-	
-	Block decrypted = decrypt(encrypted, key);
-	char* decrypted_str = (char*)&decrypted;
-	decrypted_str[16] = '\0';
-
-	dbg(encrypted, "ENCRYPTED");
-	std::cout << "DECRYPTED: " << decrypted_str << "\n";
 }

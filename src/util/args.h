@@ -9,6 +9,8 @@ namespace Args {
 	extern int key_int;
 	extern std::string key_str;
 	extern bool doDecrypt;
+	extern bool outputToFile;
+	extern std::string outputFilePath;
 	void parse(int argc, char* argv[]);
 }
 

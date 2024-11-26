@@ -1,3 +1,4 @@
+#include <cassert>
 #include <cstdint>
 #include <cstring>
 #include <string>
@@ -29,6 +30,21 @@ const word K[] = {
     0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
 };
 
+/* void padMsg(std::string msg) {
+    assert(msg.length() <= 16);
+
+    // let me cook, bro, let me cook
+    M = new block[1];
+    int msg_len = msg.length();
+    uint8_t* M_ptr = (uint8_t*)M;
+    uint8_t* msg_ptr = ((uint8_t*)msg.c_str());
+    for(int i = 0; i < msg_len; i++) {
+       *(M_ptr + i) = *(msg_ptr + msg_len - 1 - i);
+    }
+    *(M_ptr + msg_len) = 0x80;
+    
+    *(M_ptr + 15*8) = msg_len;
+} */
 void padMsg(std::string msg) {
     int l = msg.length() * 8;
     int k = (448 - (l + 1) % 512 + 512) % 512;
@@ -45,7 +61,7 @@ void padMsg(std::string msg) {
     int* ptr2 = (int*)(M + N);
     ptr2 -= 1;
     // must swap (mirror) bits cuz the spec says so
-    //*ptr2 = __builtin_bswap32(l);
+    // *ptr2 = __builtin_bswap32(l);
     *ptr2 = l;
 }
 
@@ -110,7 +126,7 @@ digest hash(std::string msg) {
     return H; 
 }
 }
-using namespace sha256;
+/* using namespace sha256;
 #include "../../tests/fixture_sha256.cpp"
 int main() {
     padMsg("abc");
@@ -139,21 +155,10 @@ int main() {
         }
         
     }
-}
+} */
 
 /* int main() {
     padMsg("abc");
-    word W[64];
-    prepareMsgSchedule(W, &M[0]);
-    word small_endian = 0b00011000000000000000000000000000;
-    word big_endian = 0b00000000000000000000000000011000;
-
-    utilbits::print(W[15]);    
-    std::cout << "is small endian: " << (W[15] == small_endian) << "\n";
-    std::cout << "is big endian: " << (W[15] == big_endian) << "\n";
-
-    std::cout << "\nMEM CMPR\n";
-    std::cout << "is small endian: " << memcmp(&W[15], &small_endian, 4) << "\n";
-    std::cout << "is big endian: " << memcmp(&W[15], &big_endian, 4) << "\n";
-
+    word* fuck = (word*)M;
+    memdebug::printArray(fuck, 16);
 } */

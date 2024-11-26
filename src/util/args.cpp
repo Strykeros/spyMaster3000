@@ -12,9 +12,11 @@ std::string text;
 int key_int;
 std::string key_str;
 bool doDecrypt = false;
+bool outputToFile = false;
+std::string outputFilePath;
 
 // private variables
-const std::set<std::string> validAlgos = {DES, CAESER, PLAYFAIR};
+const std::set<std::string> validAlgos = {DES, TRIPLE_DES, CAESER, PLAYFAIR, AES};
 
 void parse(int argc, char* argv[]) {
 	// get and set selectedAlgo
@@ -25,10 +27,11 @@ void parse(int argc, char* argv[]) {
 
 	//check if there is piped input
 	if (!isatty(fileno(stdin))) {
-		std::getline(std::cin, text);
+		// No ideas how this works
+		text.assign(std::istreambuf_iterator<char>(std::cin), std::istreambuf_iterator<char>());
 	}
 
-	while((c = getopt(argc, argv, "a:t:k:D")) != -1) {
+	while((c = getopt(argc, argv, "a:t:k:F:D")) != -1) {
 		switch(c) {
 		case 't':
 			text = optarg;
@@ -39,7 +42,11 @@ void parse(int argc, char* argv[]) {
 				catch(...) {throw "Caeser key must be an intenger!";}
 			}
 			else if(selectedAlgo == PLAYFAIR) {
-				if(strlen(optarg) > 25) throw "Playfair key cannot be larger than 25 character!";
+				if(strlen(optarg) > 25) throw "Playfair key cannot be longer than 25 character!";
+				key_str = optarg;
+			}
+			else if(selectedAlgo == AES) {
+				if(strlen(optarg) > 16) throw "AES key cannot be longer than 16 characters!";
 				key_str = optarg;
 			}
 			else {
@@ -48,6 +55,10 @@ void parse(int argc, char* argv[]) {
 			break;
 		case 'D':
 			doDecrypt = true;
+			break;
+		case 'F':
+			outputToFile = true;
+			outputFilePath = std::string(optarg);
 			break;
 		}
 
