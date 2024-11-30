@@ -1,9 +1,14 @@
+#include <cstdint>
 #include <iomanip>
 #include <iostream>
 #include <ostream>
 #include <sys/types.h>
-#include "aes.h"
+#include <cassert>
+#include <cstdint>
+#include <cstring>
+#include <iomanip>
 
+#include "aes.h"
 namespace aes {
 
 const uint8_t SBOX[16][16] = {
@@ -59,6 +64,33 @@ const uint8_t RCON[] = {
 	0x36, 0x00, 0x00, 0x00
 };
 
+union Block {
+	uint8_t matrix[4][4];
+	uint8_t bytes[16];
+	uint32_t rows[4];
+		
+	uint32_t getCol(int c) {
+		uint32_t col = 0;
+		for(int r = 0; r < 4; r++)
+			col |= this->matrix[r][c] << (8*r);
+		return col;
+	}
+
+	Block(std::string text) {
+		assert(text.length() == 16);
+		std::memcpy(this, text.data(), 16);
+	}
+
+	Block(uint8_t* bytes) {
+		for (int c = 0; c < 4; c++) {
+			for (int r = 0; r < 4; r++) {
+				this->matrix[r][c] = bytes[4*c+r];	
+			}
+		}
+	}
+
+	Block() {}
+};
 
 // Print the block for debugging
 void dbg(const Block& b, const char* msg = nullptr) {

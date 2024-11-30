@@ -3,4 +3,7 @@ build/
 *.out
 googletest/
 core.*
+# ignore files named "core"
 core
+# do not ignore directory "core"
+!core/
