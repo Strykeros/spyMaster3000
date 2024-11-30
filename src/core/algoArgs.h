@@ -1,7 +1,9 @@
 #include <cmath>
+#include <stdexcept>
 #include <string>
 #include <map>
 #include "spymaster.h"
+#include "../util/util.h"
 
 struct AlgoArgs {
 	Algo selectedAlgo;
@@ -27,8 +29,17 @@ public:
 		args.key = _key;
 	}
 
-	void setInputAsPlainText(std::string _input) {
+	void setInputFromASCII(std::string _input) {
 		args.input = _input;
+	}
+
+	void setInputFromHex(std::string _input) {
+		try {
+			args.input = util::hexToASCII(_input);
+		} 
+		catch (...) {
+			throw std::string("Invalid hex value");	
+		}
 	}
 
 	AlgoArgs build() {

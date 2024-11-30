@@ -1,6 +1,7 @@
 #include <cassert>
 #include <iomanip>
 #include <sstream>
+#include <stdexcept>
 #include "util.h"
 
 namespace util {
@@ -13,7 +14,7 @@ std::string strToHex(std::string str) {
 }
 
 std::string hexToASCII(std::string hex) {
-	assert(hex.length() % 2 == 0 && "No half bytes! (2 hex digits = 1 byte)");
+	if(hex.length() % 2 != 0) throw std::invalid_argument("Missing hex digit");
 
 	std::string output;
 	std::string buff;

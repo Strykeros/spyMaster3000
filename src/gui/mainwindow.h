@@ -25,5 +25,6 @@ private slots:
     void onKeyGiven();
     void onEncryptBtnClicked();
     void onDecryptBtnClicked();
+    void onInputComboBoxChanged(const QString& text);
 };
 #endif // MAINWINDOW_H

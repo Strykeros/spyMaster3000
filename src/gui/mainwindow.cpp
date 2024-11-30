@@ -13,10 +13,12 @@ MainWindow::MainWindow(QWidget *parent)
 
 	ui->key_err_label->hide();
 	ui->input_err_label->hide();
+
     connect(ui->key_textbox, SIGNAL(editingFinished()), this, SLOT(onKeyGiven()));
     connect(ui->input_textbox, SIGNAL(textChanged()), this, SLOT(onInputGiven()));
     connect(ui->encrypt_btn, SIGNAL(clicked()), this, SLOT(onEncryptBtnClicked()));
     connect(ui->decrypt_btn, SIGNAL(clicked()), this, SLOT(onDecryptBtnClicked()));
+    connect(ui->input_comboBox, SIGNAL(currentTextChanged(const QString&)), this, SLOT(onInputComboBoxChanged(const QString &)));
     
 }
 
@@ -25,9 +27,19 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::onInputComboBoxChanged(const QString& text) {
+	onInputGiven();
+}
+
 void MainWindow::onInputGiven() {
 	try {
-		builder.setInputAsPlainText(ui->input_textbox->toPlainText().toStdString());
+
+		if(ui->input_comboBox->currentText() == "Text") {
+			builder.setInputFromASCII(ui->input_textbox->toPlainText().toStdString());
+		}
+		else {
+			builder.setInputFromHex(ui->input_textbox->toPlainText().toStdString());
+		}
 		ui->input_err_label->hide();
 	}
 	catch (std::string err){
