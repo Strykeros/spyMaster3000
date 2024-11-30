@@ -38,7 +38,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(spymaster PRIVATE Qt${QT_VERSION_MAJOR}::Widgets core)
+target_link_libraries(spymaster PRIVATE Qt${QT_VERSION_MAJOR}::Widgets core util)
 
 set_target_properties(spymaster PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

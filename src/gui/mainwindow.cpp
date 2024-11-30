@@ -1,6 +1,8 @@
+#include <iostream>
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include <iostream>
+#include "../util/util.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -55,7 +57,7 @@ void MainWindow::onEncryptBtnClicked() {
 		return;
 	}
 	
-	std::string encrypted = spymaster::encryptText(args);
+	std::string encrypted = util::strToHex(spymaster::encryptText(args));
 	ui->output_textbox->insertPlainText(QString::fromStdString(encrypted));
 }
 
