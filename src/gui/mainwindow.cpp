@@ -13,8 +13,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 	ui->key_err_label->hide();
 	ui->input_err_label->hide();
+	keyMaxCharLength = QString::number(builder.getMaxKeyBitSize() / 8);
+	ui->key_size_label->setText("0 / " + keyMaxCharLength);
 
     connect(ui->key_textbox, SIGNAL(editingFinished()), this, SLOT(onKeyGiven()));
+    connect(ui->key_textbox, SIGNAL(textChanged(const QString&)), this, SLOT(onKeyChanged(const QString&)));
     connect(ui->input_textbox, SIGNAL(textChanged()), this, SLOT(onInputGiven()));
     connect(ui->encrypt_btn, SIGNAL(clicked()), this, SLOT(onEncryptBtnClicked()));
     connect(ui->decrypt_btn, SIGNAL(clicked()), this, SLOT(onDecryptBtnClicked()));
@@ -48,6 +51,11 @@ void MainWindow::onInputGiven() {
 	}
 }
 
+void MainWindow::onKeyChanged(const QString &text) { 
+	ui->key_size_label->setText(
+		QString::number(text.length()) + " / " + keyMaxCharLength
+	);	
+}
 void MainWindow::onKeyGiven() {
 	try {
 		builder.setKey(ui->key_textbox->text().toStdString());

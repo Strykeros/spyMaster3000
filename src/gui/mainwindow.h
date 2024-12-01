@@ -19,10 +19,12 @@ public:
 private:
     Ui::MainWindow *ui;
     AlgoArgsBuilder builder;
+    QString keyMaxCharLength;
 
 private slots:
     void onInputGiven();
     void onKeyGiven();
+    void onKeyChanged(const QString &text);
     void onEncryptBtnClicked();
     void onDecryptBtnClicked();
     void onInputComboBoxChanged(const QString& text);

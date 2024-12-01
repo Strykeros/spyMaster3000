@@ -42,6 +42,10 @@ public:
 		}
 	}
 
+	int getMaxKeyBitSize() {
+		return spec.keyBitSize;
+	}
+
 	AlgoArgs build() {
 		if(args.key.empty()) throw std::string("Key is not given");
 		if(args.input.empty()) throw std::string("Input is not given");
