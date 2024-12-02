@@ -13,17 +13,18 @@ struct AlgoArgs {
 
 class AlgoArgsBuilder {
 private:
-	AlgoArgs args;
-	AlgoSpec spec;
+	AlgoArgs args; // what is being built
+	const AlgoSpec* spec; // the specicification to build against (used to validate build)
 public:
-	AlgoArgsBuilder(Algo _selectedAlgo): spec(algoSpecs.at(_selectedAlgo)) {
+	AlgoArgsBuilder(Algo _selectedAlgo) {
 		args.selectedAlgo = _selectedAlgo; 
+		spec = getAlgoSpec(_selectedAlgo);
 	}
 
 	void setKey(std::string _key) {
-		bool isInvalidKeySize = _key.length() != spec.keyBitSize / 8 && spec.keyBitSize != -1; // -1 means infinite
+		bool isInvalidKeySize = _key.length() != spec->keyBitSize / 8 && spec->keyBitSize != INFINITE_LEN;
 		if(isInvalidKeySize) {
-			throw std::string(spec.name) + " key lenght must be " + std::to_string(spec.keyBitSize); 
+			throw std::string(spec->name) + " key lenght must be " + std::to_string(spec->keyBitSize); 
 		}
 
 		args.key = _key;
@@ -42,8 +43,15 @@ public:
 		}
 	}
 
-	int getMaxKeyBitSize() {
-		return spec.keyBitSize;
+	int getKeyRequiredBitSize() {
+		return spec->keyBitSize;
+	}
+
+	void reset(Algo algo) {
+		args.selectedAlgo = algo;	
+		args.input.clear();
+		args.key.clear();
+		spec = getAlgoSpec(algo);
 	}
 
 	AlgoArgs build() {

@@ -3,6 +3,7 @@ include_directories(util)
 
 add_library(core
   lib.cpp
+  spymaster.cpp
   algos/aes.cpp
 )
 

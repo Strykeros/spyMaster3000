@@ -22,6 +22,8 @@ private:
     QString keyMaxCharLength;
 
 private slots:
+    void setKeyMaxCharLength();
+    void onAlgoChanged(int index);
     void onInputGiven();
     void onKeyGiven();
     void onKeyChanged(const QString &text);

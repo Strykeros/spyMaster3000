@@ -186,6 +186,54 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
+   <widget class="QLabel" name="algo_label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Algorithm</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="algo_comboBox">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>20</y>
+      <width>79</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>AES128</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Caeser</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Playfair</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>DES</string>
+     </property>
+    </item>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

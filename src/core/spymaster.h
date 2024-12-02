@@ -1,8 +1,5 @@
 #pragma once
-
-#include <map>
 #include <string>
-#include "algos/aes.h"
 
 constexpr int INFINITE_LEN = -1;
 
@@ -21,16 +18,8 @@ struct AlgoSpec {
 		name(n), keyBitSize(k), blockBitSize(b), encrypt_ptr(ec), decrypt_ptr(dc) {};
 };
 
-const std::map<Algo, AlgoSpec> algoSpecs = {
-	{Algo::AES128, AlgoSpec("AES128", 128, 128, aes::encrypt, aes::decrypt)},
-	{Algo::AES192, AlgoSpec("AES192", 192, 128, nullptr, nullptr)},
-	{Algo::AES256, AlgoSpec("AES256", 256, 128, nullptr, nullptr)},
-	{Algo::DES, AlgoSpec("AES256", 64, 64, nullptr, nullptr)},
-	{Algo::TDES_2KEY, AlgoSpec("Triple DES 2Key",128, 64, nullptr, nullptr)},
-	{Algo::TDES_3KEY, AlgoSpec("Triple DES 2Key", 192, 64, nullptr, nullptr)},
-	{Algo::PLAYFAIR, AlgoSpec("Playfair", 26, INFINITE_LEN, nullptr, nullptr)},
-	{Algo::CAESER, AlgoSpec("Caeser", INFINITE_LEN, INFINITE_LEN, nullptr, nullptr)},
-};
+const AlgoSpec* getAlgoSpec(Algo algo);
+
 
 
 

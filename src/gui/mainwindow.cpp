@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	ui->key_err_label->hide();
 	ui->input_err_label->hide();
-	keyMaxCharLength = QString::number(builder.getMaxKeyBitSize() / 8);
+	setKeyMaxCharLength();
 	ui->key_size_label->setText("0 / " + keyMaxCharLength);
 
     connect(ui->key_textbox, SIGNAL(editingFinished()), this, SLOT(onKeyGiven()));
@@ -22,12 +22,30 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->encrypt_btn, SIGNAL(clicked()), this, SLOT(onEncryptBtnClicked()));
     connect(ui->decrypt_btn, SIGNAL(clicked()), this, SLOT(onDecryptBtnClicked()));
     connect(ui->input_comboBox, SIGNAL(currentTextChanged(const QString&)), this, SLOT(onInputComboBoxChanged(const QString &)));
+    connect(ui->algo_comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onAlgoChanged(int)));
     
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::setKeyMaxCharLength() {
+	keyMaxCharLength = QString::number(builder.getKeyRequiredBitSize() / 8);
+}
+
+void MainWindow::onAlgoChanged(int index) {
+	// MUST BE THE SAME ORDER AS SHOWN IN THE SELECTION COMBOBOX 
+	static const Algo algos[] = {Algo::DES, Algo::CAESER, Algo::PLAYFAIR, Algo::DES};
+
+	builder.reset(algos[index]);
+
+	// update ui
+	onInputGiven();
+	onKeyGiven();
+	setKeyMaxCharLength();
+	onKeyChanged(ui->key_textbox->text());
 }
 
 void MainWindow::onInputComboBoxChanged(const QString& text) {

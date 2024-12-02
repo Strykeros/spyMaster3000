@@ -1,9 +1,10 @@
 #include "lib.h"
+#include "spymaster.h"
 
 std::string performCryption(AlgoArgs args, bool doDecryption = false) {
-	AlgoSpec spec = algoSpecs.at(args.selectedAlgo);
+	const AlgoSpec* spec = getAlgoSpec(args.selectedAlgo);
 
-	int blockByteSize = spec.blockBitSize / 8;
+	int blockByteSize = spec->blockBitSize / 8;
 	std::string& input = args.input; 
 
 	std::string output;
@@ -16,10 +17,10 @@ std::string performCryption(AlgoArgs args, bool doDecryption = false) {
 	for(int i = 0; i < input.length(); i += blockByteSize) {
 		std::string chunk = input.substr(i, blockByteSize);
 		if(doDecryption) {
-			output += spec.decrypt_ptr(chunk, args.key);
+			output += spec->decrypt_ptr(chunk, args.key);
 		}
 		else {
-			output += spec.encrypt_ptr(chunk, args.key);
+			output += spec->encrypt_ptr(chunk, args.key);
 		}
 	}
 
