@@ -37,7 +37,9 @@ void MainWindow::setKeyMaxCharLength() {
 
 void MainWindow::onAlgoChanged(int index) {
 	// MUST BE THE SAME ORDER AS SHOWN IN THE SELECTION COMBOBOX 
-	static const Algo algos[] = {Algo::DES, Algo::CAESER, Algo::PLAYFAIR, Algo::DES};
+	static const Algo algos[] = {Algo::AES128, Algo::CAESER, Algo::PLAYFAIR, Algo::DES};
+
+	std::cout << "Selected " << getAlgoSpec(algos[index])->name << "\n";
 
 	builder.reset(algos[index]);
 

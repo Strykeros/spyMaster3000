@@ -22,9 +22,22 @@ public:
 	}
 
 	void setKey(std::string _key) {
-		bool isInvalidKeySize = _key.length() != spec->keyBitSize / 8 && spec->keyBitSize != INFINITE_LEN;
+		int keyLen = _key.length();
+		bool isInvalidKeySize;
+		std::string errorMsg;
+
+		if(args.selectedAlgo == Algo::PLAYFAIR) {
+			isInvalidKeySize = keyLen < 0 || keyLen > 26;
+			if(isInvalidKeySize) errorMsg = "Playfair key must be less than 26 characters";
+		}	
+		else {
+			isInvalidKeySize = keyLen != spec->keyBitSize / 8 && spec->keyBitSize != INFINITE_LEN;
+			if(isInvalidKeySize)
+				errorMsg = std::string(spec->name) + " key lenght must equal " + std::to_string(spec->keyBitSize / 8) + " characters"; 
+		}
+
 		if(isInvalidKeySize) {
-			throw std::string(spec->name) + " key lenght must be " + std::to_string(spec->keyBitSize); 
+			throw errorMsg;
 		}
 
 		args.key = _key;
