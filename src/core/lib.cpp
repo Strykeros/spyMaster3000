@@ -9,6 +9,18 @@ std::string performCryption(AlgoArgs args, bool doDecryption = false) {
 
 	std::string output;
 
+	if(spec->blockBitSize == INFINITE_LEN) {
+		
+		if(doDecryption) {
+			output += spec->decrypt_ptr(input, args.key);
+		}
+		else {
+			output += spec->encrypt_ptr(input, args.key);
+		}
+
+		return output;
+	}
+
 	if(input.length() != blockByteSize) {
 		int padLen = blockByteSize - (input.length() % blockByteSize);
 		input.append(padLen, ' ');

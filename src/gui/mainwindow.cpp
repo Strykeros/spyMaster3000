@@ -112,6 +112,7 @@ void MainWindow::onDecryptBtnClicked() {
 	}
 	
 	std::string encrypted = spymaster::decryptText(args);
+	std::cout << "encrypted: " << encrypted << "\n";
 	ui->output_textbox->insertPlainText(QString::fromStdString(encrypted));
 }
 

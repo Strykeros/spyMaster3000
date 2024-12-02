@@ -1,11 +1,14 @@
 #include "des-tables.h"
-#include "../util/utility.h"
-#include <vector>
+#include <cassert>
+#include <cstdint>
+#include <cstring>
+#include <string>
 #include "des.h"
 
-using namespace util;
+namespace des {
+typedef uint64_t word;
+typedef char byte; 
 
-namespace DES {
 word permutate(word input, int* table, int inputSize, int outputSize) {
     word output = 0;
     for(int i = 0; i < outputSize; i++) {
@@ -88,24 +91,40 @@ word tripleDes(word text, word key1, word key2, bool encrypt) {
 	return step3;
 }
 
-std::vector<word> encrypt(const char* plaintext, word key) {
-	std::vector<word> plainChunks = stringToChunks(plaintext);
-	std::vector<word> encryptedChunks;
+std::string encrypt(std::string input, std::string key) {
+	assert(input.length() == 8);
+	assert(key.length() == 8);
 
-	for(const auto& chunk: plainChunks) {
-		encryptedChunks.push_back(des(chunk, key, true));
-	}
+	word inputWord;
+	std::memcpy(&inputWord, input.data(), 8);
 
-	return encryptedChunks;
-	 
+	word keyWord;
+	std::memcpy(&keyWord, input.data(), 8);
+
+	word output = des(inputWord, keyWord, true);
+
+	std::string outputStr(reinterpret_cast<char*>(&output), 8);
+	return outputStr;
+	//return std::to_string(output);
 }
-std::string decrypt(std::vector<word> encryptedChunks, word key) {
-	std::vector<word> decryptedChunks;
 
-	for(const auto& chunk : encryptedChunks) {
-		decryptedChunks.push_back(des(chunk, key, false));
-	}
+std::string decrypt(std::string input, std::string key) {
+	assert(input.length() == 8);
+	assert(key.length() == 8);
 
-	return chunksToString(decryptedChunks);
+	//word inputWord = (word)input.data();
+	//word keyWord = (word)key.data();
+	word inputWord;
+	std::memcpy(&inputWord, input.data(), 8);
+
+	word keyWord;
+	std::memcpy(&keyWord, input.data(), 8);
+
+	word output = des(inputWord, keyWord, false);
+
+	std::string outputStr(reinterpret_cast<char*>(&output), 8);
+	return outputStr;
+	//return std::to_string(output);
 }
+
 }

@@ -1,7 +1,8 @@
-#include "../util/utility.h"
-#include <vector>
+#pragma once
 
-namespace DES {
-	std::vector<util::word> encrypt(const char* plaintext, util::word key);
-	std::string decrypt(std::vector<util::word> encryptedChunks, util::word key);
+#include <string>
+
+namespace des {
+	std::string encrypt(std::string input, std::string key);
+	std::string decrypt(std::string input, std::string key);
 }
