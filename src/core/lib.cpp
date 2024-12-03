@@ -41,11 +41,11 @@ std::string performCryption(AlgoArgs args, bool doDecryption = false) {
 	return output;
 }
 namespace spymaster {
-	std::string encryptFile(AlgoArgs args);	
+	std::string encryptFile(const AlgoArgs& args);	
 
-	std::string decryptFile(AlgoArgs args);	
+	std::string decryptFile(const AlgoArgs& args);	
 
-	std::string encryptText(AlgoArgs args) {
+	std::string encryptText(const AlgoArgs& args) {
 		for (auto b : args.IV) {
 			std::cout << std::hex << (int)b;
 		}
@@ -53,7 +53,7 @@ namespace spymaster {
 		return performCryption(args);
 	}	
 
-	std::string decryptText(AlgoArgs args) {
+	std::string decryptText(const AlgoArgs& args) {
 		return performCryption(args, true);
 	}
 }
