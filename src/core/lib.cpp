@@ -1,5 +1,7 @@
 #include "lib.h"
 #include "spymaster.h"
+#include <ios>
+#include <iostream>
 
 std::string performCryption(AlgoArgs args, bool doDecryption = false) {
 	const AlgoSpec* spec = getAlgoSpec(args.selectedAlgo);
@@ -44,6 +46,10 @@ namespace spymaster {
 	std::string decryptFile(AlgoArgs args);	
 
 	std::string encryptText(AlgoArgs args) {
+		for (auto b : args.IV) {
+			std::cout << std::hex << (int)b;
+		}
+		std::cout << std::endl;
 		return performCryption(args);
 	}	
 

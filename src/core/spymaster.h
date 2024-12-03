@@ -7,6 +7,7 @@ typedef std::string(*EncryptFunc)(std::string, std::string);
 typedef	std::string(*DecryptFunc)(std::string, std::string);
 
 enum class Algo { AES128, AES192, AES256, DES, TDES_2KEY, TDES_3KEY, PLAYFAIR, CAESER };
+enum class CipherMode { NONE, ECB, CBC, CTR };
 
 struct AlgoSpec {
 	const char* name;

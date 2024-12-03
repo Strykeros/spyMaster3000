@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>653</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="encrypt_btn">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>350</y>
+      <x>250</x>
+      <y>420</y>
       <width>101</width>
       <height>51</height>
      </rect>
@@ -31,7 +31,7 @@
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>350</y>
+      <y>420</y>
       <width>101</width>
       <height>51</height>
      </rect>
@@ -49,6 +49,9 @@
       <height>121</height>
      </rect>
     </property>
+    <property name="placeholderText">
+     <string>input...</string>
+    </property>
    </widget>
    <widget class="QLineEdit" name="key_textbox">
     <property name="geometry">
@@ -58,6 +61,9 @@
       <width>741</width>
       <height>23</height>
      </rect>
+    </property>
+    <property name="placeholderText">
+     <string>key...</string>
     </property>
    </widget>
    <widget class="QLabel" name="input_label">
@@ -100,7 +106,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>420</y>
+      <y>480</y>
       <width>751</width>
       <height>111</height>
      </rect>
@@ -109,8 +115,8 @@
    <widget class="QLabel" name="output_label">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>390</y>
+      <x>30</x>
+      <y>450</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -127,27 +133,33 @@
    <widget class="QLabel" name="key_err_label">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>630</x>
       <y>320</y>
-      <width>741</width>
-      <height>16</height>
+      <width>131</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
      <string>error</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="input_err_label">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>560</x>
       <y>230</y>
-      <width>741</width>
-      <height>16</height>
+      <width>201</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
      <string>error</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QComboBox" name="input_comboBox">
@@ -233,6 +245,91 @@
       <string>DES</string>
      </property>
     </item>
+   </widget>
+   <widget class="QLineEdit" name="iv_textbox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>360</y>
+      <width>651</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="placeholderText">
+     <string>IV value as hex...</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="iv_random_btn">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>360</y>
+      <width>80</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Random</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="c_mode_label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>330</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Cipher Mode</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="c_mode_comboBox">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>330</y>
+      <width>79</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>ECB</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CBC</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CTR</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="c_mode_err_label">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>390</y>
+      <width>201</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>error</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

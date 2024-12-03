@@ -1,5 +1,6 @@
 #include "playfair.h"
 #include <algorithm>
+#include <cassert>
 #include <regex>
 #include <cstring>
 
@@ -41,6 +42,7 @@ std::string preprocessInput(std::string s) {
 }
 
 std::string encrypt(std::string input, std::string key) {
+	assert(key.length() <= 26);
 	std::string ct = createCypherTable(key);
 	input = preprocessInput(input);
 	std::string output;
@@ -75,6 +77,8 @@ std::string encrypt(std::string input, std::string key) {
 	return output;
 }
 std::string decrypt(std::string input, std::string key) {
+	assert(key.length() <= 26);
+
 	std::string ct = createCypherTable(key);
 	std::string output;
 

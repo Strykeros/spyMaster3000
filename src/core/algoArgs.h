@@ -1,12 +1,16 @@
+#include <cassert>
 #include <cmath>
+#include <iostream>
 #include <stdexcept>
 #include <string>
-#include <map>
+#include <vector>
 #include "spymaster.h"
 #include "../util/util.h"
 
 struct AlgoArgs {
 	Algo selectedAlgo;
+	CipherMode cipherMode = CipherMode::NONE;
+	std::vector<unsigned char> IV; //initilization vector	
 	std::string key;
 	std::string input;
 };
@@ -37,10 +41,28 @@ public:
 		}
 
 		if(isInvalidKeySize) {
+			args.key.clear();
 			throw errorMsg;
 		}
 
 		args.key = _key;
+	}
+
+	void setCipherMode(CipherMode cipherMode) {
+		args.cipherMode = cipherMode;
+	}
+
+	void setIV(std::string IVStr) {
+		std::vector<unsigned char> temp;			
+		try {
+			temp = util::hexToBytes(IVStr, spec->blockBitSize / 8); 	
+		}
+		catch (std::invalid_argument err) {
+			args.IV.clear();
+			throw std::string(err.what());	
+		}
+		
+		args.IV = temp;
 	}
 
 	void setInputFromASCII(std::string _input) {
@@ -52,6 +74,7 @@ public:
 			args.input = util::hexToASCII(_input);
 		} 
 		catch (...) {
+			args.input.clear();
 			throw std::string("Invalid hex value");	
 		}
 	}
@@ -64,12 +87,20 @@ public:
 		args.selectedAlgo = algo;	
 		args.input.clear();
 		args.key.clear();
+		args.cipherMode = CipherMode::NONE;
+		args.IV.clear();
 		spec = getAlgoSpec(algo);
 	}
 
 	AlgoArgs build() {
 		if(args.key.empty()) throw std::string("Key is not given");
 		if(args.input.empty()) throw std::string("Input is not given");
+		if(args.cipherMode == CipherMode::NONE) throw std::string("Cipher Mode not selected");
+		if(args.IV.empty()) throw std::string("IV not given");
+
+		// you fucked up if this is wrong
+		assert(args.IV.size() == spec->blockBitSize / 8);
+
 		return args;
 	}
 };
