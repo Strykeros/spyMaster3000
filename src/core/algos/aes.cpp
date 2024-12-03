@@ -295,6 +295,8 @@ Block invCipher(Block state, int Nr, Block* w) {
 };
 
 std::string encrypt(std::string input, std::string key) {
+	assert(input.length() == 16);
+	assert(key.length() == 16);
 	int Nr = 10;
 	int Nk = 4;
 	Block blockInput(input);	
@@ -306,6 +308,8 @@ std::string encrypt(std::string input, std::string key) {
 }
 
 std::string decrypt(std::string input, std::string key) {
+	assert(input.length() == 16);
+	assert(key.length() == 16);
 	int Nr = 10;
 	int Nk = 4;
 	Block blockInput(input);	

@@ -1,11 +1,11 @@
 #include "algoArgs.h"
 
 namespace spymaster {
-	std::string encryptFile(const AlgoArgs& args);	
+	std::string encryptFile(AlgoArgs& args);	
 
-	std::string decryptFile(const AlgoArgs& args);	
+	std::string decryptFile(AlgoArgs& args);	
 
-	std::string encryptText(const AlgoArgs& args);
+	std::string encryptText(AlgoArgs& args);
 
-	std::string decryptText(const AlgoArgs& args);
+	std::string decryptText(AlgoArgs& args);
 }

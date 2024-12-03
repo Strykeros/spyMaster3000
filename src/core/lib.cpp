@@ -1,59 +1,65 @@
 #include "lib.h"
 #include "spymaster.h"
-#include <ios>
-#include <iostream>
+#include <cstdint>
 
-std::string performCryption(AlgoArgs args, bool doDecryption = false) {
+
+// PKCS7 padding
+void padInput(std::string& msg, int desiredBlockByteSize) {
+	if(msg.length() % desiredBlockByteSize == 0) return;
+	uint8_t padLen = desiredBlockByteSize - (msg.length() % desiredBlockByteSize);
+	msg.append(padLen, (char)padLen);
+}
+
+void unpadOutput(std::string& msg, int desiredBlockByteSize) {
+    uint8_t padLen = msg.back();
+
+	if(padLen > desiredBlockByteSize) return;
+
+    // Validate padding bytes
+    for (int i = msg.length() - padLen; i < msg.length(); i++) {
+        if (static_cast<uint8_t>(msg[i]) != padLen) {
+			return;
+        }
+    }
+
+    // Remove padding bytes
+    msg.erase(msg.length() - padLen);
+}
+
+std::string ECB_Cryption(AlgoArgs& args, bool doEncryption) {
 	const AlgoSpec* spec = getAlgoSpec(args.selectedAlgo);
-
+	assert(spec->blockBitSize != INFINITE_LEN);
 	int blockByteSize = spec->blockBitSize / 8;
-	std::string& input = args.input; 
 
+	if(doEncryption) padInput(args.input, blockByteSize);
+
+	int blockCount = args.input.length() / blockByteSize; 
 	std::string output;
-
-	if(spec->blockBitSize == INFINITE_LEN) {
-		
-		if(doDecryption) {
-			output += spec->decrypt_ptr(input, args.key);
-		}
-		else {
-			output += spec->encrypt_ptr(input, args.key);
-		}
-
-		return output;
-	}
-
-	if(input.length() != blockByteSize) {
-		int padLen = blockByteSize - (input.length() % blockByteSize);
-		input.append(padLen, ' ');
-	}
-
-	for(int i = 0; i < input.length(); i += blockByteSize) {
-		std::string chunk = input.substr(i, blockByteSize);
-		if(doDecryption) {
-			output += spec->decrypt_ptr(chunk, args.key);
-		}
-		else {
+	
+	for(int i = 0; i < args.input.length(); i += blockByteSize) {
+		std::string chunk = args.input.substr(i, blockByteSize);
+		if(doEncryption) {
 			output += spec->encrypt_ptr(chunk, args.key);
 		}
+		else {
+			output += spec->decrypt_ptr(chunk, args.key);
+		}
 	}
+
+	if(!doEncryption) unpadOutput(output, blockByteSize);
 
 	return output;
 }
 namespace spymaster {
-	std::string encryptFile(const AlgoArgs& args);	
+	std::string encryptFile(AlgoArgs& args);	
 
-	std::string decryptFile(const AlgoArgs& args);	
+	std::string decryptFile(AlgoArgs& args);	
 
-	std::string encryptText(const AlgoArgs& args) {
-		for (auto b : args.IV) {
-			std::cout << std::hex << (int)b;
-		}
-		std::cout << std::endl;
-		return performCryption(args);
+	std::string encryptText(AlgoArgs& args) {
+		return ECB_Cryption(args, true);
 	}	
 
-	std::string decryptText(const AlgoArgs& args) {
-		return performCryption(args, true);
+	std::string decryptText(AlgoArgs& args) {
+		return ECB_Cryption(args, false);
 	}
 }
