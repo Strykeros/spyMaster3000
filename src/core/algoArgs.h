@@ -100,7 +100,8 @@ public:
 	AlgoArgs build() {
 		if(args.key.empty()) throw std::string("Key is not given");
 		if(args.input.empty()) throw std::string("Input is not given");
-		if(args.cipherMode != CipherMode::ECB && args.IV.empty()) throw std::string("IV not given");
+		bool IVRequired = spec->blockBitSize != INFINITE_LEN && args.cipherMode != CipherMode::ECB;
+		if(IVRequired && args.IV.empty()) throw std::string("IV not given");
 		
 		// you fucked up if this is wrong
 		assert(args.cipherMode != CipherMode::NONE || args.IV.size() == spec->blockBitSize / 8);

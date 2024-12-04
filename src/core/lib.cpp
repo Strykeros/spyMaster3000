@@ -90,17 +90,32 @@ std::string CBC_Cryption(AlgoArgs& args, bool doEncryption) {
 
 	return output;
 }
+
+std::string infiniteLenCryption(AlgoArgs& args, bool doEncryption) { 
+	const AlgoSpec* spec = getAlgoSpec(args.selectedAlgo);
+	assert(spec->blockBitSize == INFINITE_LEN);
+
+	std::string output;
+	
+	if(doEncryption) {
+		output = spec->encrypt_ptr(args.input, args.key);
+	}
+	else {
+		output = spec->decrypt_ptr(args.input, args.key);
+	}
+
+	return output;
+}
 namespace spymaster {
 	std::string encryptFile(AlgoArgs& args);	
 
 	std::string decryptFile(AlgoArgs& args);	
 
 	std::string encryptText(AlgoArgs& args) {
-		for(auto b : args.IV) {
-			std::cout << std::hex << std::setw(2) << std::setfill('0') << (int)b;
+		const AlgoSpec* spec = getAlgoSpec(args.selectedAlgo);
+		if(spec->blockBitSize == INFINITE_LEN) {
+			return infiniteLenCryption(args, true);
 		}
-		std::cout << std::endl;
-
 		switch (args.cipherMode) {
 			case CipherMode::ECB:
 				return ECB_Cryption(args, true);
@@ -112,6 +127,11 @@ namespace spymaster {
 	}	
 
 	std::string decryptText(AlgoArgs& args) {
+		const AlgoSpec* spec = getAlgoSpec(args.selectedAlgo);
+		if(spec->blockBitSize == INFINITE_LEN) {
+			return infiniteLenCryption(args, false);
+		}
+
 		switch (args.cipherMode) {
 			case CipherMode::ECB:
 				return ECB_Cryption(args, false);
