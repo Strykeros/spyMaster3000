@@ -51,6 +51,45 @@ std::string ECB_Cryption(AlgoArgs& args, bool doEncryption) {
 
 	return output;
 }
+
+void xorBlock(std::string& target, std::string& other) {
+	assert(target.length() == other.length());
+	for(int i = 0; i < target.length(); i ++) {
+		target[i] ^= other[i];
+	}
+}
+std::string CBC_Cryption(AlgoArgs& args, bool doEncryption) {
+	const AlgoSpec* spec = getAlgoSpec(args.selectedAlgo);
+	assert(spec->blockBitSize != INFINITE_LEN);
+	int blockByteSize = spec->blockBitSize / 8;
+
+	if(doEncryption) padInput(args.input, blockByteSize);
+
+	int blockCount = args.input.length() / blockByteSize; 
+	std::string output;
+	std::string prevBlock(args.IV.begin(), args.IV.end()); 
+	
+	for(int i = 0; i < args.input.length(); i += blockByteSize) {
+		std::string chunk = args.input.substr(i, blockByteSize);
+		std::string processedBlock;
+		if(doEncryption) {
+			xorBlock(chunk, prevBlock);
+			processedBlock = spec->encrypt_ptr(chunk, args.key);
+			prevBlock = processedBlock;
+		}
+		else {
+			processedBlock = spec->decrypt_ptr(chunk, args.key);
+			xorBlock(processedBlock, prevBlock);
+			prevBlock = chunk;
+		}
+
+		output += processedBlock;
+	}
+
+	if(!doEncryption) unpadOutput(output, blockByteSize);
+
+	return output;
+}
 namespace spymaster {
 	std::string encryptFile(AlgoArgs& args);	
 
@@ -61,10 +100,25 @@ namespace spymaster {
 			std::cout << std::hex << std::setw(2) << std::setfill('0') << (int)b;
 		}
 		std::cout << std::endl;
-		return ECB_Cryption(args, true);
+
+		switch (args.cipherMode) {
+			case CipherMode::ECB:
+				return ECB_Cryption(args, true);
+			case CipherMode::CBC:
+				return CBC_Cryption(args, true);
+			defult:
+				return "twinkle dingle";
+		}
 	}	
 
 	std::string decryptText(AlgoArgs& args) {
-		return ECB_Cryption(args, false);
+		switch (args.cipherMode) {
+			case CipherMode::ECB:
+				return ECB_Cryption(args, false);
+			case CipherMode::CBC:
+				return CBC_Cryption(args, false);
+			defult:
+				return "twinkle dingle";
+		}
 	}
 }
