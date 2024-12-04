@@ -76,7 +76,13 @@ void MainWindow::IVGiven() {
 
 }
 void MainWindow::setKeyMaxCharLength() {
-	keyMaxCharLength = QString::number(builder.getKeyRequiredBitSize() / 8);
+	int keyBitSize = builder.getKeyRequiredBitSize();
+	if(keyBitSize == INFINITE_LEN) {
+		keyMaxCharLength = "inf";
+	}
+	else {
+		keyMaxCharLength = QString::number(keyBitSize / 8);
+	}
 }
 
 void MainWindow::onAlgoChanged(int index) {
@@ -92,7 +98,7 @@ void MainWindow::onAlgoChanged(int index) {
 	onKeyGiven();
 	setKeyMaxCharLength();
 	onKeyChanged(ui->key_textbox->text());
-	CipherModeIndexChanged(0);
+	CipherModeIndexChanged(ui->c_mode_comboBox->currentIndex());
 	onInputGiven();
 }
 
