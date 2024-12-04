@@ -2,6 +2,7 @@
 #include "spymaster.h"
 #include <cstdint>
 #include <iomanip>
+#include <stdexcept>
 
 
 // PKCS7 padding
@@ -106,39 +107,66 @@ std::string infiniteLenCryption(AlgoArgs& args, bool doEncryption) {
 
 	return output;
 }
+
+void incrementCounter(std::string& counter) {
+    for (int i = counter.size() - 1; i >= 0; i--) {
+        if (++counter[i]) break;
+    }
+}
+
+std::string CTR_Cryption(AlgoArgs& args, bool doEncryption) {
+    const AlgoSpec* spec = getAlgoSpec(args.selectedAlgo);
+    assert(spec->blockBitSize != INFINITE_LEN);
+
+    int blockByteSize = spec->blockBitSize / 8;
+
+	if(doEncryption) padInput(args.input, blockByteSize);
+
+	int blockCount = args.input.length() / blockByteSize; 
+    std::string output;
+    std::string counter(args.IV.begin(), args.IV.end());
+
+    for (int i = 0; i < args.input.length(); i += blockByteSize) {
+        std::string chunk = args.input.substr(i, blockByteSize);
+        std::string keystream = spec->encrypt_ptr(counter, args.key);
+        xorBlock(chunk, keystream);
+        output += chunk;
+        incrementCounter(counter);
+    }
+
+	if(!doEncryption) unpadOutput(output, blockByteSize);
+    return output;
+}
+
+std::string doCryption(AlgoArgs& args, bool doEncryption) {
+	const AlgoSpec* spec = getAlgoSpec(args.selectedAlgo);
+
+	if(spec->blockBitSize == INFINITE_LEN) {
+		return infiniteLenCryption(args, true);
+	}
+
+	switch (args.cipherMode) {
+		case CipherMode::ECB:
+			return ECB_Cryption(args, doEncryption);
+		case CipherMode::CBC:
+			return CBC_Cryption(args, doEncryption);
+		case CipherMode::CTR:
+			return CTR_Cryption(args, doEncryption);
+		case CipherMode::NONE:
+			throw std::invalid_argument("cipher mode cannot be NONE");
+	}
+}
+
 namespace spymaster {
 	std::string encryptFile(AlgoArgs& args);	
 
 	std::string decryptFile(AlgoArgs& args);	
 
 	std::string encryptText(AlgoArgs& args) {
-		const AlgoSpec* spec = getAlgoSpec(args.selectedAlgo);
-		if(spec->blockBitSize == INFINITE_LEN) {
-			return infiniteLenCryption(args, true);
-		}
-		switch (args.cipherMode) {
-			case CipherMode::ECB:
-				return ECB_Cryption(args, true);
-			case CipherMode::CBC:
-				return CBC_Cryption(args, true);
-			defult:
-				return "twinkle dingle";
-		}
+		return doCryption(args, true);
 	}	
 
 	std::string decryptText(AlgoArgs& args) {
-		const AlgoSpec* spec = getAlgoSpec(args.selectedAlgo);
-		if(spec->blockBitSize == INFINITE_LEN) {
-			return infiniteLenCryption(args, false);
-		}
-
-		switch (args.cipherMode) {
-			case CipherMode::ECB:
-				return ECB_Cryption(args, false);
-			case CipherMode::CBC:
-				return CBC_Cryption(args, false);
-			defult:
-				return "twinkle dingle";
-		}
+		return doCryption(args, false);
 	}
 }
