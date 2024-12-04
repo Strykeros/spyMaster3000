@@ -2,6 +2,7 @@ build/
 .cache/
 *.out
 googletest/
+bin/
 core.*
 # ignore files named "core"
 core
