@@ -41,8 +41,17 @@ MainWindow::~MainWindow()
 void MainWindow::CipherModeIndexChanged(int index) {
 	// MUST BE THE SAME ORDER AS SHOWN IN THE SELECTION COMBOBOX 
 	static const CipherMode cipherModes[] = {CipherMode::ECB, CipherMode::CBC, CipherMode::CTR};
+	CipherMode mode = cipherModes[index];
 	try {
-		builder.setCipherMode(cipherModes[index]);
+		builder.setCipherMode(mode);
+		if(mode == CipherMode::ECB) {
+			ui->iv_textbox->setDisabled(true);	
+			ui->iv_random_btn->setDisabled(true);
+		}
+		else {
+			ui->iv_textbox->setDisabled(false);	
+			ui->iv_random_btn->setDisabled(false);
+		}
 	}
 	catch (...){
 		std::cout << "Error changing cipher modes (this should not happen)\n";
@@ -124,7 +133,6 @@ void MainWindow::onEncryptBtnClicked() {
 		std::cout << err << "\n";	
 		return;
 	}
-	
 	std::string encrypted = util::strToHex(spymaster::encryptText(args));
 	ui->output_textbox->insertPlainText(QString::fromStdString(encrypted));
 }

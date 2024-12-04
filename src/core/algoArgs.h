@@ -95,11 +95,10 @@ public:
 	AlgoArgs build() {
 		if(args.key.empty()) throw std::string("Key is not given");
 		if(args.input.empty()) throw std::string("Input is not given");
-		if(args.cipherMode == CipherMode::NONE) throw std::string("Cipher Mode not selected");
-		if(args.IV.empty()) throw std::string("IV not given");
-
+		if(args.cipherMode != CipherMode::ECB && args.IV.empty()) throw std::string("IV not given");
+		
 		// you fucked up if this is wrong
-		assert(args.IV.size() == spec->blockBitSize / 8);
+		assert(args.cipherMode != CipherMode::NONE || args.IV.size() == spec->blockBitSize / 8);
 
 		return args;
 	}
