@@ -3,6 +3,7 @@
 #include "algos/aes.h"
 #include "algos/des.h"
 #include "algos/playfair.h"
+#include "algos/caeser.h"
 
 const std::map<Algo, AlgoSpec> algoSpecs = {
 	{Algo::AES128, AlgoSpec("AES128", 128, 128, aes::encrypt, aes::decrypt)},
@@ -12,7 +13,7 @@ const std::map<Algo, AlgoSpec> algoSpecs = {
 	{Algo::TDES_2KEY, AlgoSpec("Triple DES 2Key",128, 64, nullptr, nullptr)},
 	{Algo::TDES_3KEY, AlgoSpec("Triple DES 2Key", 192, 64, nullptr, nullptr)},
 	{Algo::PLAYFAIR, AlgoSpec("Playfair", 26*8, INFINITE_LEN, playfair::encrypt, playfair::decrypt)},
-	{Algo::CAESER, AlgoSpec("Caeser", INFINITE_LEN, INFINITE_LEN, nullptr, nullptr)},
+	{Algo::CAESER, AlgoSpec("Caeser", INFINITE_LEN, INFINITE_LEN, Caeser::encrypt, Caeser::decrypt)},
 };
 
 const AlgoSpec* getAlgoSpec(Algo algo) {

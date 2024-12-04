@@ -25,27 +25,38 @@ public:
 		spec = getAlgoSpec(_selectedAlgo);
 	}
 
-	void setKey(std::string _key) {
-		int keyLen = _key.length();
-		bool isInvalidKeySize;
+	void setKey(std::string key) {
+		int keyLen = key.length();
+		bool isInvalidKey;
 		std::string errorMsg;
 
 		if(args.selectedAlgo == Algo::PLAYFAIR) {
-			isInvalidKeySize = keyLen < 0 || keyLen > 26;
-			if(isInvalidKeySize) errorMsg = "Playfair key must be less than 26 characters";
+			isInvalidKey = keyLen < 0 || keyLen > 26;
+			if(isInvalidKey) errorMsg = "Playfair key must be less than 26 characters";
 		}	
+		else if (args.selectedAlgo == Algo::CAESER) {
+			try {
+				size_t pos;
+				std::stoi(key, &pos);
+				if (pos != key.size()) throw;
+				isInvalidKey = false;
+			} catch (...) {
+				errorMsg = "Caeser key must be a number";
+				isInvalidKey = true;
+			}
+		}
 		else {
-			isInvalidKeySize = keyLen != spec->keyBitSize / 8 && spec->keyBitSize != INFINITE_LEN;
-			if(isInvalidKeySize)
+			isInvalidKey = keyLen != spec->keyBitSize / 8 && spec->keyBitSize != INFINITE_LEN;
+			if(isInvalidKey)
 				errorMsg = std::string(spec->name) + " key lenght must equal " + std::to_string(spec->keyBitSize / 8) + " characters"; 
 		}
 
-		if(isInvalidKeySize) {
+		if(isInvalidKey) {
 			args.key.clear();
 			throw errorMsg;
 		}
 
-		args.key = _key;
+		args.key = key;
 	}
 
 	void setCipherMode(CipherMode cipherMode) {

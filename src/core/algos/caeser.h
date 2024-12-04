@@ -1,9 +1,8 @@
 #pragma once
 
-#include <cstring>
-#include <iostream>
+#include <string>
 
 namespace Caeser {
-	std::string encrypt(std::string input, int key);
-	std::string decrypt(std::string input, int key);	
+	std::string encrypt(std::string input, std::string key);
+	std::string decrypt(std::string input, std::string key);	
 }

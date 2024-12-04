@@ -142,7 +142,7 @@ std::string doCryption(AlgoArgs& args, bool doEncryption) {
 	const AlgoSpec* spec = getAlgoSpec(args.selectedAlgo);
 
 	if(spec->blockBitSize == INFINITE_LEN) {
-		return infiniteLenCryption(args, true);
+		return infiniteLenCryption(args, doEncryption);
 	}
 
 	switch (args.cipherMode) {

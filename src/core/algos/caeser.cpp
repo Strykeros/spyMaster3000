@@ -1,9 +1,9 @@
 #include "caeser.h"
+#include <iostream>
 
-namespace Caeser {
-
-std::string encrypt(std::string input, int key) {
+std::string caeser(std::string input, int key) {
 	key = key % 26;
+
 	std::string output;
 	for (char& c : input) {
 		if(c >= 'A' && c <= 'Z')
@@ -16,8 +16,17 @@ std::string encrypt(std::string input, int key) {
 	
 	return output;
 }
+namespace Caeser {
 
-std::string decrypt(std::string input, int key) {
-	return encrypt(input, -key);
+std::string encrypt(std::string input, std::string key) {
+	int keyInt = std::stoi(key);
+	std::cout << "enc " << key << std::endl;
+	return caeser(input, keyInt);
+}
+
+std::string decrypt(std::string input, std::string key) {
+	int keyInt = std::stoi(key);
+	std::cout << "dec " << key << std::endl;
+	return caeser(input, -keyInt);
 }
 }

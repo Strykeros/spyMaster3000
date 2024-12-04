@@ -7,5 +7,6 @@ add_library(core
   algos/aes.cpp
   algos/des.cpp
   algos/playfair.cpp
+  algos/caeser.cpp
 )
 
