@@ -65,6 +65,11 @@ public:
 		args.IV = temp;
 	}
 
+	std::string setRandomIV() {
+		args.IV = util::getRandomIV(spec->blockBitSize / 8);
+		return util::bytesToHex(args.IV);
+	}
+
 	void setInputFromASCII(std::string _input) {
 		args.input = _input;
 	}

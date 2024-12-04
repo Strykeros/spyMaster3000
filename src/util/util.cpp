@@ -1,6 +1,7 @@
 #include <cassert>
 #include <iomanip>
 #include <iostream>
+#include <random>
 #include <sstream>
 #include <stdexcept>
 #include "util.h"
@@ -59,4 +60,28 @@ std::vector<unsigned char> hexToBytes(std::string hex, int returnByteCount) {
 
     return output;
 }
+
+std::vector<unsigned char> getRandomIV(int byteCount) {
+    std::vector<unsigned char> iv(byteCount);
+    std::random_device rd; // Generate seed
+    std::mt19937 gen(rd()); // Random number generator
+    std::uniform_int_distribution<unsigned char> dis(0, 255); // Byte range [0, 255]
+
+    for (int i = 0; i < byteCount; i++) {
+        iv[i] = dis(gen);
+    }
+
+    return iv;
+}
+std::string bytesToHex(const std::vector<unsigned char>& bytes) {
+    std::ostringstream oss;
+    oss << std::hex << std::setfill('0');
+
+    for (unsigned char byte : bytes) {
+        oss << std::setw(2) << static_cast<int>(byte);
+    }
+
+    return oss.str();
+}
+
 }

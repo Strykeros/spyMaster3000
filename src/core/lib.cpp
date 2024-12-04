@@ -1,6 +1,7 @@
 #include "lib.h"
 #include "spymaster.h"
 #include <cstdint>
+#include <iomanip>
 
 
 // PKCS7 padding
@@ -56,6 +57,10 @@ namespace spymaster {
 	std::string decryptFile(AlgoArgs& args);	
 
 	std::string encryptText(AlgoArgs& args) {
+		for(auto b : args.IV) {
+			std::cout << std::hex << std::setw(2) << std::setfill('0') << (int)b;
+		}
+		std::cout << std::endl;
 		return ECB_Cryption(args, true);
 	}	
 

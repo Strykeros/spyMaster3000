@@ -30,12 +30,18 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->algo_comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onAlgoChanged(int)));
     connect(ui->iv_textbox, SIGNAL(editingFinished()), this, SLOT(IVGiven()));
     connect(ui->c_mode_comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(CipherModeIndexChanged(int)));
+    connect(ui->iv_random_btn, SIGNAL(clicked()), this, SLOT(onIVRandomBtnClicked()));
     
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::onIVRandomBtnClicked() {
+	std::string IV = builder.setRandomIV();
+	ui->iv_textbox->setText(QString::fromStdString(IV));
 }
 
 void MainWindow::CipherModeIndexChanged(int index) {
@@ -46,6 +52,7 @@ void MainWindow::CipherModeIndexChanged(int index) {
 		builder.setCipherMode(mode);
 		if(mode == CipherMode::ECB) {
 			ui->iv_textbox->setDisabled(true);	
+			ui->iv_textbox->clear();
 			ui->iv_random_btn->setDisabled(true);
 		}
 		else {

@@ -32,5 +32,6 @@ private slots:
     void onInputComboBoxChanged(const QString& text);
     void IVGiven();
     void CipherModeIndexChanged(int index);
+    void onIVRandomBtnClicked();
 };
 #endif // MAINWINDOW_H
