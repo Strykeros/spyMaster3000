@@ -92,6 +92,8 @@ void MainWindow::onAlgoChanged(int index) {
 	onKeyGiven();
 	setKeyMaxCharLength();
 	onKeyChanged(ui->key_textbox->text());
+	CipherModeIndexChanged(0);
+	onInputGiven();
 }
 
 void MainWindow::onInputComboBoxChanged(const QString& text) {
