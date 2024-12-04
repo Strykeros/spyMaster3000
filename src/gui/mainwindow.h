@@ -33,5 +33,6 @@ private slots:
     void IVGiven();
     void CipherModeIndexChanged(int index);
     void onIVRandomBtnClicked();
+    void setDisabledIVInput(bool setDisabled);
 };
 #endif // MAINWINDOW_H

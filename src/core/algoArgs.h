@@ -83,9 +83,14 @@ public:
 			throw std::string("Invalid hex value");	
 		}
 	}
-
+	
+	// get info about the algo the builder is trying to build args for
 	int getKeyRequiredBitSize() {
 		return spec->keyBitSize;
+	}
+
+	int getBlockBitSize() {
+		return spec->blockBitSize;
 	}
 
 	void reset(Algo algo) {

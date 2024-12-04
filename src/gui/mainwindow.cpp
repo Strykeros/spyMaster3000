@@ -51,19 +51,23 @@ void MainWindow::CipherModeIndexChanged(int index) {
 	try {
 		builder.setCipherMode(mode);
 		if(mode == CipherMode::ECB) {
-			ui->iv_textbox->setDisabled(true);	
-			ui->iv_textbox->clear();
-			ui->iv_random_btn->setDisabled(true);
+			setDisabledIVInput(true);
 		}
 		else {
-			ui->iv_textbox->setDisabled(false);	
-			ui->iv_random_btn->setDisabled(false);
+			setDisabledIVInput(false);
 		}
 	}
 	catch (...){
 		std::cout << "Error changing cipher modes (this should not happen)\n";
 	}
 }
+
+void MainWindow::setDisabledIVInput(bool setDisabled) {
+	ui->iv_textbox->setDisabled(setDisabled);	
+	ui->iv_random_btn->setDisabled(setDisabled);
+	if(setDisabled) ui->iv_textbox->clear();
+}
+
 void MainWindow::IVGiven() {
 	try {
 		builder.setIV(ui->iv_textbox->text().toStdString());
@@ -88,18 +92,24 @@ void MainWindow::setKeyMaxCharLength() {
 void MainWindow::onAlgoChanged(int index) {
 	// MUST BE THE SAME ORDER AS SHOWN IN THE SELECTION COMBOBOX 
 	static const Algo algos[] = {Algo::AES128, Algo::CAESER, Algo::PLAYFAIR, Algo::DES};
+	Algo selectedAlgo = algos[index];
 
-	std::cout << "Selected " << getAlgoSpec(algos[index])->name << "\n";
+	builder.reset(selectedAlgo);
 
-	builder.reset(algos[index]);
+	if(builder.getBlockBitSize() == INFINITE_LEN) {
+		ui->c_mode_comboBox->setDisabled(true);		
+		setDisabledIVInput(true);
+	}
+	else {
+		ui->c_mode_comboBox->setDisabled(false);		
+		CipherModeIndexChanged(ui->c_mode_comboBox->currentIndex());
+	}
 
 	// update ui
 	onInputGiven();
 	onKeyGiven();
 	setKeyMaxCharLength();
 	onKeyChanged(ui->key_textbox->text());
-	CipherModeIndexChanged(ui->c_mode_comboBox->currentIndex());
-	onInputGiven();
 }
 
 void MainWindow::onInputComboBoxChanged(const QString& text) {
