@@ -36,7 +36,8 @@ And supports cipher modes such as EBC, CBC and CTR.
 
 More cipher algorithms and modes coming soon!
 
-**All appropriate algorithms are implimented in acordance to FIP specifications!**
+> [!NOTE]
+> All appropriate algorithms are implimented in acordance to FIP specifications!
 
 # ⚒️ How to build?
 
