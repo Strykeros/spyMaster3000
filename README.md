@@ -41,7 +41,7 @@ More cryptographic algorithms and cipher modes coming soon!
 > All appropriate cryptographic algorithms are implimented in acordance to FIPS specifications!
 
 > [!CAUTION]
-> This project is designed solely for educational and learning purposes. It is not intended for real-world cryptographic applications or securing sensitive data, for that use reliable libraries such as [OpenSSL](https://www.openssl.org/) instead!
+> This project was developed solely for learning purposes. It is not intended for real-world cryptographic applications or securing sensitive data, for that use reliable libraries such as [OpenSSL](https://www.openssl.org/) instead!
 
 # ⚒️ How to build?
 
