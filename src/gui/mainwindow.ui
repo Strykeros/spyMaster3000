@@ -57,7 +57,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>290</y>
+      <y>270</y>
       <width>741</width>
       <height>23</height>
      </rect>
@@ -88,7 +88,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>260</y>
+      <y>240</y>
       <width>41</width>
       <height>20</height>
      </rect>
@@ -133,8 +133,8 @@
    <widget class="QLabel" name="key_err_label">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>320</y>
+      <x>60</x>
+      <y>240</y>
       <width>431</width>
       <height>20</height>
      </rect>
@@ -143,7 +143,7 @@
      <string>error</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="input_err_label">
@@ -186,7 +186,7 @@
     <property name="geometry">
      <rect>
       <x>700</x>
-      <y>270</y>
+      <y>250</y>
       <width>58</width>
       <height>16</height>
      </rect>
@@ -329,6 +329,35 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="key_hash_textbox">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>300</y>
+      <width>661</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="placeholderText">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="key_hash_checkBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>300</y>
+      <width>85</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>hash key</string>
     </property>
    </widget>
   </widget>

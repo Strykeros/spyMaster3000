@@ -8,5 +8,6 @@ add_library(core
   algos/des.cpp
   algos/playfair.cpp
   algos/caeser.cpp
+  algos/sha256.cpp
 )
 

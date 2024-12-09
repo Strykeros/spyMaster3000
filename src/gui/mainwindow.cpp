@@ -1,4 +1,5 @@
 #include <iostream>
+#include <qnamespace.h>
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "../util/util.h"
@@ -15,13 +16,13 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->key_err_label->hide();
 	ui->input_err_label->hide();
 	ui->c_mode_err_label->hide();
+	ui->key_hash_textbox->setDisabled(true);
 
-	setKeyMaxCharLength();
+	setKeyMaxCharLength(false);
 	CipherModeIndexChanged(0);
 	ui->key_size_label->setText("0 / " + keyMaxCharLength);
 
 	// SET UP WIDGET CALLBACKS (signals)
-    connect(ui->key_textbox, SIGNAL(editingFinished()), this, SLOT(onKeyGiven()));
     connect(ui->key_textbox, SIGNAL(textChanged(const QString&)), this, SLOT(onKeyChanged(const QString&)));
     connect(ui->input_textbox, SIGNAL(textChanged()), this, SLOT(onInputGiven()));
     connect(ui->encrypt_btn, SIGNAL(clicked()), this, SLOT(onEncryptBtnClicked()));
@@ -31,12 +32,27 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->iv_textbox, SIGNAL(editingFinished()), this, SLOT(IVGiven()));
     connect(ui->c_mode_comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(CipherModeIndexChanged(int)));
     connect(ui->iv_random_btn, SIGNAL(clicked()), this, SLOT(onIVRandomBtnClicked()));
+    connect(ui->key_hash_checkBox, SIGNAL(stateChanged(int)), this, SLOT(onHashKeyChecked(int)));
     
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::onHashKeyChecked(int state) {
+	if(state == Qt::CheckState::Checked) {
+		ui->key_hash_textbox->setDisabled(false);
+		setKeyMaxCharLength(true);
+		onKeyChanged(ui->key_textbox->text());
+	}
+	else {
+		ui->key_hash_textbox->setDisabled(true);
+		ui->key_hash_textbox->clear();
+		setKeyMaxCharLength(false);
+		onKeyChanged(ui->key_textbox->text());
+	}
 }
 
 void MainWindow::onIVRandomBtnClicked() {
@@ -79,9 +95,9 @@ void MainWindow::IVGiven() {
 	}
 
 }
-void MainWindow::setKeyMaxCharLength() {
+void MainWindow::setKeyMaxCharLength(bool setInfinite = false) {
 	int keyBitSize = builder.getKeyRequiredBitSize();
-	if(keyBitSize == INFINITE_LEN) {
+	if(keyBitSize == INFINITE_LEN || setInfinite) {
 		keyMaxCharLength = "inf";
 	}
 	else {
@@ -107,7 +123,6 @@ void MainWindow::onAlgoChanged(int index) {
 
 	// update ui
 	onInputGiven();
-	onKeyGiven();
 	setKeyMaxCharLength();
 	onKeyChanged(ui->key_textbox->text());
 }
@@ -137,8 +152,14 @@ void MainWindow::onKeyChanged(const QString &text) {
 	ui->key_size_label->setText(
 		QString::number(text.length()) + " / " + keyMaxCharLength
 	);	
-}
-void MainWindow::onKeyGiven() {
+
+	if(ui->key_hash_checkBox->isChecked()) {
+		std::string digest = builder.setKeyAsHash(ui->key_textbox->text().toStdString());
+		ui->key_hash_textbox->setText(QString::fromStdString(digest));
+		ui->key_err_label->hide();
+		return;
+	}
+
 	try {
 		builder.setKey(ui->key_textbox->text().toStdString());
 		ui->key_err_label->hide();

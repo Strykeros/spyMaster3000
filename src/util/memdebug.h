@@ -42,7 +42,7 @@ public:
 		}
 
 		for(int i = 0; i < size; i++) {
-			print(arr[i], nullptr, reverseEndian, base);
+			print(arr[i]);
 		}
 	}
 
@@ -78,6 +78,48 @@ public:
 			line1 += color + b1 + RESET + " ";
 			line2 += color + b2 + RESET + " ";
 		}
+
+		std::cout << line1 << std::endl;
+		std::cout << line2 << std::endl;
+	}
+
+	void compareArray(const T* value1, const T* value2, int size, 
+				bool value1_reverseEndian = false, bool value2_reverseEndian = false) 
+	{
+		static const char* GREEN = "\033[32m";
+		static const char* RED = "\033[31m";
+		static const char* RESET = "\033[0m";
+
+		std::string line1;
+		std::string line2;
+
+
+		int start_i = value1_reverseEndian ? sizeof(T) - 1 : 0;
+		int end_i = value1_reverseEndian ? -1 : sizeof(T);
+		int step_i = value1_reverseEndian ? -1 : 1;
+
+		int start_j = value2_reverseEndian ? sizeof(T) - 1 : 0;
+		int end_j = value2_reverseEndian ? -1 : sizeof(T);
+		int step_j = value2_reverseEndian ? -1 : 1;
+
+		for(int s = 0; s < size; s++) {
+			unsigned char* ptr1 = (unsigned char*)&(value1[s]);
+			unsigned char* ptr2 = (unsigned char*)&(value2[s]);
+			for(int i = start_i, j = start_j; 
+			i != end_i; 
+			i += step_i, j += step_j) 
+			{
+				std::string b1 = byteAs(ptr1[i], base);
+				std::string b2 = byteAs(ptr2[j], base);
+
+				const char* color = ptr1[i] == ptr2[j] ? GREEN : RED;
+				line1 += color + b1 + RESET + " ";
+				line2 += color + b2 + RESET + " ";
+			}
+			line1 += "| ";
+			line2 += "| ";
+		}
+
 
 		std::cout << line1 << std::endl;
 		std::cout << line2 << std::endl;

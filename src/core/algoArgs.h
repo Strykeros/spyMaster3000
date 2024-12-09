@@ -1,10 +1,10 @@
 #include <cassert>
 #include <cmath>
-#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
 #include "spymaster.h"
+#include "algos/sha256.h"
 #include "../util/util.h"
 
 struct AlgoArgs {
@@ -57,6 +57,11 @@ public:
 		}
 
 		args.key = key;
+	}
+
+	std::string setKeyAsHash(std::string key) {
+		args.key = sha256::hash(key).substr(0, spec->keyBitSize / 8);	
+		return util::strToHex(args.key);
 	}
 
 	void setCipherMode(CipherMode cipherMode) {

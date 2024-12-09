@@ -22,10 +22,9 @@ private:
     QString keyMaxCharLength;
 
 private slots:
-    void setKeyMaxCharLength();
+    void setKeyMaxCharLength(bool setInfinite);
     void onAlgoChanged(int index);
     void onInputGiven();
-    void onKeyGiven();
     void onKeyChanged(const QString &text);
     void onEncryptBtnClicked();
     void onDecryptBtnClicked();
@@ -34,5 +33,6 @@ private slots:
     void CipherModeIndexChanged(int index);
     void onIVRandomBtnClicked();
     void setDisabledIVInput(bool setDisabled);
+    void onHashKeyChecked(int state);
 };
 #endif // MAINWINDOW_H
