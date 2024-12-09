@@ -31,13 +31,17 @@ Currenlty Spymaster has implimented:
 - DES
 - CAESER
 - PLAYFAIR
+- SHA256
 
 And supports cipher modes such as EBC, CBC and CTR.
 
-More cipher algorithms and modes coming soon!
+More cryptographic algorithms and cipher modes coming soon!
 
 > [!NOTE]
-> All appropriate algorithms are implimented in acordance to FIP specifications!
+> All appropriate cryptographic algorithms are implimented in acordance to FIPS specifications!
+
+> [!CAUTION]
+> This project is designed solely for educational and learning purposes. It is not intended for real-world cryptographic applications or securing sensitive data, for that use reliable libraries such as [OpenSSL](https://www.openssl.org/) instead!
 
 # ⚒️ How to build?
 
@@ -58,7 +62,7 @@ The only dependecy is QT for the graphical interface, make sure it's linked prop
 
 ## 🎯 TODO
 
-- Key Hashing via SHA
+- ~~Key Hashing via SHA~~
 - File I/O
 - Visual overhall
 - Encryption breaking
