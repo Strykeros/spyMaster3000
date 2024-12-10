@@ -78,7 +78,12 @@ union Block {
 
 	Block(std::string text) {
 		assert(text.length() == 16);
-		std::memcpy(this, text.data(), 16);
+		uint8_t* bytes = (uint8_t*)text.data();
+		for (int c = 0; c < 4; c++) {
+			for (int r = 0; r < 4; r++) {
+				this->matrix[r][c] = bytes[4*c+r];	
+			}
+		}
 	}
 
 	Block(uint8_t* bytes) {
@@ -87,6 +92,16 @@ union Block {
 				this->matrix[r][c] = bytes[4*c+r];	
 			}
 		}
+	}
+
+	std::string toString() {
+		std::string output;
+		for (int c = 0; c < 4; c++) {
+			for (int r = 0; r < 4; r++) {
+				output.push_back(this->matrix[r][c]);
+			}
+		}
+		return output;
 	}
 
 	Block() {}
@@ -303,8 +318,7 @@ std::string encrypt(std::string input, std::string key) {
 	Block blockKey(key);	
 	Block* w = keyExpansion(blockKey,Nr, Nk);
 	Block blockOutput = cipher(blockInput, Nr, w);
-	std::string output(reinterpret_cast<char*>(&blockOutput), 16);
-	return output;
+	return blockOutput.toString();
 }
 
 std::string decrypt(std::string input, std::string key) {
@@ -316,7 +330,6 @@ std::string decrypt(std::string input, std::string key) {
 	Block blockKey(key);	
 	Block* w = keyExpansion(blockKey,Nr, Nk);
 	Block blockOutput = invCipher(blockInput, Nr, w);
-	std::string output(reinterpret_cast<char*>(&blockOutput), 16);
-	return output;
+	return blockOutput.toString();
 }
 }

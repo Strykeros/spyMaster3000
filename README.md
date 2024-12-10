@@ -27,8 +27,9 @@ Encrypt and decrypt messages with ease!
 
 Currenlty Spymaster has implimented:
 
-- AES
+- AES128
 - DES
+- 3DES 2key & 3key
 - CAESER
 - PLAYFAIR
 - SHA256

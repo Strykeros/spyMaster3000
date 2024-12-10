@@ -107,7 +107,7 @@ void MainWindow::setKeyMaxCharLength(bool setInfinite = false) {
 
 void MainWindow::onAlgoChanged(int index) {
 	// MUST BE THE SAME ORDER AS SHOWN IN THE SELECTION COMBOBOX 
-	static const Algo algos[] = {Algo::AES128, Algo::CAESER, Algo::PLAYFAIR, Algo::DES};
+	static const Algo algos[] = {Algo::AES128, Algo::CAESER, Algo::PLAYFAIR, Algo::DES, Algo::TDES_2KEY, Algo::TDES_3KEY};
 	Algo selectedAlgo = algos[index];
 
 	builder.reset(selectedAlgo);

@@ -18,7 +18,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${outputDir}")
 # Fetch googleTest as git submodule
 include(cmake/updateSubmodules.cmake)
 
-# include(CTest)
+include(CTest)
 add_subdirectory(src)
-# add_subdirectory(external)
-# add_subdirectory(tests)
+add_subdirectory(external)
+add_subdirectory(tests)

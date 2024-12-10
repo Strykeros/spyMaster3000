@@ -245,6 +245,16 @@
       <string>DES</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>3DES 2key</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>3DES 3key</string>
+     </property>
+    </item>
    </widget>
    <widget class="QLineEdit" name="iv_textbox">
     <property name="geometry">
